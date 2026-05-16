@@ -1,16 +1,24 @@
 # REBOT API
 
-> KOBİlerin atık, elektrik, su ve lojistik faturalarını **BDDK YVO Tebliği** ve **GHG Protocol** uyumlu, doğrulanabilir ESG verisine dönüştüren açık çekirdek bir API.
+> **TR** &nbsp;KOBİlerin atık, elektrik, su ve lojistik faturalarını **BDDK YVO Tebliği** ve **GHG Protocol** uyumlu, doğrulanabilir ESG verisine dönüştüren açık çekirdek bir API.
 >
-> An open-core API that converts SME utility invoices into BDDK YVO + GHG Protocol compliant, verifiable ESG data.
+> **EN** &nbsp;An open-core API that converts SME utility invoices into **BDDK YVO** and **GHG Protocol** compliant, verifiable ESG data.
 
 [![License: Apache 2.0](https://img.shields.io/badge/code-Apache_2.0-blue.svg)](LICENSE)
 [![Data License: CC BY-SA 4.0](https://img.shields.io/badge/data-CC%20BY--SA%204.0-lightgrey.svg)](DATA-LICENSE)
 [![Status: Alpha](https://img.shields.io/badge/status-alpha-orange.svg)](#yol-haritası--roadmap)
+[![CI](https://github.com/memirutku/rebot-api/actions/workflows/ci.yml/badge.svg)](https://github.com/memirutku/rebot-api/actions/workflows/ci.yml)
+
+**Canlı bağlantılar / Live links**
+
+- 🌐 Landing: <https://memirutku.github.io/rebot-api/>
+- 🔌 API: <https://rebot-api.onrender.com>
+- 📘 Swagger UI: <https://rebot-api.onrender.com/docs>
+- 💬 Tartışma / Discussions: <https://github.com/memirutku/rebot-api/discussions>
 
 ---
 
-## Türkçe
+## 🇹🇷 Türkçe
 
 ### Sorun
 BDDK'nın Nisan 2025'te yayımladığı **Yeşil Varlık Oranı (YVO) Tebliği**, bankaların yeşil kredi portföylerini bağımsız doğrulanmış çevresel veriyle tevsik etmesini zorunlu kıldı. KOBİler bu veriyi üretemiyor: ya hiç ölçülmüyor ya da firma beyanına dayanıyor. Türkiye'de **BDDK YVO için makine-okunabilir açık veri standardı yok.**
@@ -20,12 +28,12 @@ REBOT API, KOBİ faturalarını alır, **GHG Protocol Scope 1/2/3** hesabını y
 
 1. **Giriş** — `POST /v1/ingest`: PDF/CSV/JSON fatura kabul, normalize
 2. **Doğrulama** — Açık emisyon faktör kataloğu (DEFRA + TÜİK)
-3. **Çıkış** — `GET /v1/esg/{tax_id}`: BDDK YVO + EFRAG VSME XBRL uyumlu bundle, Ed25519 imzalı
+3. **Çıkış** — `GET /v1/esg/{tax_id}`: BDDK YVO + EFRAG VSME XBRL uyumlu bundle, **Ed25519 imzalı**
 
 ### Açık çekirdek modeli
 | Açık (bu repo) | Kapalı (ticari premium) |
 |---|---|
-| API motoru, parser'lar, GHG hesabı, YVO mapper, veri şemaları, emisyon faktörleri | Banka konektörleri, multi-tenant SaaS, audit dashboard, KOBİ onboarding UI |
+| API motoru, parser'lar, GHG hesabı, YVO mapper, veri şemaları, emisyon faktörleri | Banka konektörleri, multi-tenant SaaS, denetim panosu, KOBİ kayıt arayüzü |
 
 ### Hızlı başlangıç
 ```bash
@@ -37,11 +45,9 @@ uvicorn api.main:app --reload
 # Tarayıcı: http://localhost:8000/docs
 ```
 
-### Canlı demo
+### Canlı demo — uçtan uca (3 adım)
 
-🟢 **https://rebot-api.onrender.com** — Swagger UI: [/docs](https://rebot-api.onrender.com/docs)
-
-**Uçtan uca akış (3 adım):**
+🟢 **<https://rebot-api.onrender.com>**
 
 ```bash
 URL=https://rebot-api.onrender.com
@@ -63,17 +69,18 @@ curl $URL/v1/signing/pubkey | jq .
 import base64, json, requests
 from nacl.signing import VerifyKey
 
+URL = "https://rebot-api.onrender.com"
 resp = requests.get(f"{URL}/v1/esg/9876543210?period=2025-Q2").json()
 pub  = requests.get(f"{URL}/v1/signing/pubkey").json()
 
 vk = VerifyKey(base64.b64decode(pub["verify_key_b64"]))
 canonical = json.dumps(resp["bundle"], sort_keys=True, separators=(",",":"),
                       ensure_ascii=False).encode()
-vk.verify(canonical, base64.b64decode(resp["signature"]["value_b64"]))  # raises if tampered
-print("✅ Imza geçerli, BDDK YVO bundle doğrulandı")
+vk.verify(canonical, base64.b64decode(resp["signature"]["value_b64"]))  # tampered → raises
+print("✅ İmza geçerli, BDDK YVO bundle doğrulandı")
 ```
 
-**Diğer endpoint'ler:**
+**Diğer uç noktalar:**
 
 ```bash
 curl $URL/health                                        # liveness
@@ -85,34 +92,115 @@ curl $URL/v1/factors/electricity.tr.grid_average        # tek faktör
 
 > ⚠️ Render free tier — 15 dakika inaktiviteden sonra uyur. **İlk istek 30-60 saniye** sürebilir (cold start), sonraki istekler hızlı. Deploy adımları: [`docs/deploy-render.md`](docs/deploy-render.md).
 
+### Görsel demo (Gradio)
+[`demo/app.py`](demo/app.py) Hugging Face Spaces uyumlu bir Gradio arayüzü içerir. Programcı olmayan biri için fatura JSON yapıştır → imzalı YVO bundle gör akışı sunar. Yerel çalıştırma:
+
+```bash
+pip install -r demo/requirements.txt
+python demo/app.py            # http://localhost:7860
+```
+
+HF Spaces'e deploy: [`docs/deploy-hf-spaces.md`](docs/deploy-hf-spaces.md).
+
+### Landing page
+[`site/index.html`](site/index.html) — tek dosyalık static landing page, GitHub Pages'te otomatik yayınlanır: [memirutku.github.io/rebot-api](https://memirutku.github.io/rebot-api/). TR/EN dil değiştirici + favicon + og:image dahil. Deploy ayarları: [`docs/deploy-github-pages.md`](docs/deploy-github-pages.md).
+
 ### Lisans
 - **Kod**: [Apache 2.0](LICENSE)
 - **Veri ve şemalar**: [CC BY-SA 4.0](DATA-LICENSE)
 
 ### Katkı
-- Issue açın, PR atın. `CONTRIBUTING.md` (gelecek) ve `CODE_OF_CONDUCT.md` (gelecek) takip edin.
-- Tartışma: GitHub Discussions (Türkiye yeşil fintech için açık).
+- Issue açın, PR atın.
+- Tartışma: [GitHub Discussions](https://github.com/memirutku/rebot-api/discussions) — Türkiye yeşil fintech için açık forum.
 
 ---
 
-## English
+## 🇬🇧 English
 
 ### Problem
-Turkey's banking regulator (BDDK) issued the **Green Asset Ratio (YVO) Regulation** in April 2025, requiring banks to back green loan portfolios with independently verified environmental data. SMEs cannot produce this data — it's either unmeasured or self-reported. **Turkey lacks a machine-readable open data standard for YVO reporting.**
+Turkey's banking regulator (BDDK) issued the **Green Asset Ratio (YVO) Regulation** in April 2025, requiring banks to back green loan portfolios with independently verified environmental data. SMEs cannot produce that data — it's either unmeasured or self-reported. **Turkey has no machine-readable open data standard for YVO reporting.**
 
 ### Solution
-REBOT API ingests SME utility invoices, runs **GHG Protocol Scope 1/2/3** accounting, maps to **BDDK YVO Annex-1** objectives, and emits a signed bundle to banks. Three layers:
+REBOT API ingests SME utility invoices, runs **GHG Protocol Scope 1/2/3** accounting, maps to **BDDK YVO Annex 1** objectives, and emits a signed bundle to banks. Three layers:
 
 1. **Ingest** — `POST /v1/ingest`: accept PDF/CSV/JSON invoices, normalize
 2. **Verify** — Open emission factor catalogue (DEFRA + TÜİK Turkey-grid)
-3. **Emit** — `GET /v1/esg/{tax_id}`: BDDK YVO + EFRAG VSME XBRL compatible bundle, Ed25519 signed
+3. **Emit** — `GET /v1/esg/{tax_id}`: BDDK YVO + EFRAG VSME XBRL compatible bundle, **Ed25519 signed**
 
-### Open core
-- **Open**: API engine, parsers, GHG accounting, YVO mapper, schemas, emission factor data
-- **Closed**: Bank connectors, multi-tenant SaaS, audit dashboard, SME onboarding UI
+### Open-core
+| Open (this repo) | Closed (commercial premium) |
+|---|---|
+| API engine, parsers, GHG accounting, YVO mapper, schemas, emission-factor catalogue | Bank connectors, multi-tenant SaaS, audit dashboard, SME onboarding UI |
 
 ### Quick start
-See **Hızlı başlangıç** above — same commands.
+```bash
+git clone https://github.com/memirutku/rebot-api.git
+cd rebot-api
+python -m venv .venv && source .venv/bin/activate
+pip install -e ".[dev]"
+uvicorn api.main:app --reload
+# Browser: http://localhost:8000/docs
+```
+
+### Live demo — end-to-end (3 steps)
+
+🟢 **<https://rebot-api.onrender.com>**
+
+```bash
+URL=https://rebot-api.onrender.com
+
+# 1. Submit a waste-transport invoice
+curl -X POST $URL/v1/ingest -H "Content-Type: application/json" \
+     -d @examples/requests/waste_ingest.json
+
+# 2. Fetch the signed ESG bundle for the SME and period
+curl "$URL/v1/esg/9876543210?period=2025-Q2" | jq .
+
+# 3. Get the public key to verify the signature
+curl $URL/v1/signing/pubkey | jq .
+```
+
+Verify the signature (Python):
+
+```python
+import base64, json, requests
+from nacl.signing import VerifyKey
+
+URL = "https://rebot-api.onrender.com"
+resp = requests.get(f"{URL}/v1/esg/9876543210?period=2025-Q2").json()
+pub  = requests.get(f"{URL}/v1/signing/pubkey").json()
+
+vk = VerifyKey(base64.b64decode(pub["verify_key_b64"]))
+canonical = json.dumps(resp["bundle"], sort_keys=True, separators=(",",":"),
+                      ensure_ascii=False).encode()
+vk.verify(canonical, base64.b64decode(resp["signature"]["value_b64"]))  # tampered → raises
+print("✅ Signature valid — BDDK YVO bundle verified")
+```
+
+**Other endpoints:**
+
+```bash
+curl $URL/health                                        # liveness
+curl "$URL/v1/factors?region=TR"                        # TR emission factors
+curl $URL/v1/factors/electricity.tr.grid_average        # single factor
+```
+
+Sample signed bundle: [`examples/responses/esg_bundle_signed.json`](examples/responses/esg_bundle_signed.json)
+
+> ⚠️ Render free tier — sleeps after 15 minutes of inactivity. **First request takes 30-60 seconds** (cold start); subsequent requests are fast. Deploy steps: [`docs/deploy-render.md`](docs/deploy-render.md).
+
+### Visual demo (Gradio)
+[`demo/app.py`](demo/app.py) is a Hugging Face Spaces compatible Gradio UI. It lets non-developers paste an invoice JSON and watch the signed YVO bundle render in the browser. Run locally:
+
+```bash
+pip install -r demo/requirements.txt
+python demo/app.py            # http://localhost:7860
+```
+
+Deploy to HF Spaces: [`docs/deploy-hf-spaces.md`](docs/deploy-hf-spaces.md).
+
+### Landing page
+[`site/index.html`](site/index.html) — single-file static landing page, auto-deployed to GitHub Pages: [memirutku.github.io/rebot-api](https://memirutku.github.io/rebot-api/). Built-in TR/EN language toggle, favicon, and og:image. Setup: [`docs/deploy-github-pages.md`](docs/deploy-github-pages.md).
 
 ### Inspirations
 - [fingreen-ai/greenlang](https://github.com/fingreen-ai/greenlang) — open ESG methodology (global parallel)
@@ -123,13 +211,17 @@ See **Hızlı başlangıç** above — same commands.
 - **Code**: [Apache 2.0](LICENSE)
 - **Data & schemas**: [CC BY-SA 4.0](DATA-LICENSE)
 
+### Contribute
+- Open an issue, send a PR.
+- Discussion: [GitHub Discussions](https://github.com/memirutku/rebot-api/discussions).
+
 ---
 
-## Veri akışı
+## Veri akışı / Data flow
 
 ```
-        KOBİ veya KOBİ'nin muhasebecisi
-                  │ (1) atık taşıma fatura JSON
+        KOBİ veya KOBİ'nin muhasebecisi          SME or its accountant
+                  │ (1) atık taşıma fatura JSON   waste-transport invoice JSON
                   ▼
    ┌─────────────────────────────────────────┐
    │  POST /v1/ingest                        │
@@ -152,7 +244,7 @@ See **Hızlı başlangıç** above — same commands.
 
 ## Yol haritası / Roadmap
 
-**Tamamlandı**
+**Tamamlandı / Done**
 - [x] Repo scaffold, FastAPI iskelet, `/v1/factors` (DEFRA 2024 + TEİAŞ 2023)
 - [x] Canlı demo (Render free tier)
 - [x] `parser/waste.py` JSON yolu + `POST /v1/ingest` + dedupe
@@ -160,10 +252,10 @@ See **Hızlı başlangıç** above — same commands.
 - [x] `core/bddk_mapper.py` — YVO Ek-1 Objective 4 (circular economy)
 - [x] `GET /v1/esg/{tax_id}` — dönemsel imzalı bundle
 - [x] `core/signing.py` — Ed25519 detached signature + `/v1/signing/pubkey`
+- [x] Görsel demo (Gradio) — `demo/app.py` (HF Spaces deploy bekliyor)
+- [x] Branded landing page — [memirutku.github.io/rebot-api](https://memirutku.github.io/rebot-api/) (TR/EN)
 
-**Sırada**
-- [ ] Görsel demo (Gradio @ Hugging Face Spaces)
-- [ ] Branded landing page
+**Sırada / Next**
 - [ ] `parser/electricity.py` — EPDK formatlı elektrik faturası → Scope 2
 - [ ] `parser/water.py` — İSKİ/İZSU/ASKİ örnekleri → Scope 3.4
 - [ ] `parser/logistics.py` — akaryakıt + km bazlı → Scope 1
@@ -171,5 +263,6 @@ See **Hızlı başlangıç** above — same commands.
 - [ ] BDDK YVO Ek-1 Objective 1 (climate mitigation) + Objective 5 (pollution)
 - [ ] Atık fatura PDF parser (anonimleştirilmiş örnekler gelince)
 - [ ] Üretim için SQLite/Postgres backed storage
+- [ ] HF Spaces deploy ([`docs/deploy-hf-spaces.md`](docs/deploy-hf-spaces.md))
 
 İlerleyiş [GitHub Issues](https://github.com/memirutku/rebot-api/issues) ve [Discussions](https://github.com/memirutku/rebot-api/discussions) üzerinden.

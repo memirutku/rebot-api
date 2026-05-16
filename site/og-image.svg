@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#15803d"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Leaf badge -->
+  <g transform="translate(80, 80)">
+    <rect width="100" height="100" rx="22" fill="#15803d"/>
+    <path d="M70 22c-14 0-28 9-31 28-2 8-2 17 3 22 5 5 14 6 22 5 20-3 30-19 30-34 0-11-8-21-24-21zm-9 19c-6 3-11 9-13 19 0 0 9-9 17-12" fill="#dcfce7"/>
+  </g>
+
+  <!-- Brand -->
+  <text x="200" y="135" font-family="-apple-system, BlinkMacSystemFont, Inter, sans-serif" font-size="36" font-weight="700" fill="#dcfce7" letter-spacing="-0.5">
+    REBOT ENERGY
+  </text>
+  <text x="200" y="170" font-family="-apple-system, BlinkMacSystemFont, Inter, sans-serif" font-size="20" fill="#86efac">
+    KOBİ ESG doğrulama API'si
+  </text>
+
+  <!-- Main headline -->
+  <text x="80" y="320" font-family="-apple-system, BlinkMacSystemFont, Inter, sans-serif" font-size="64" font-weight="700" fill="white" letter-spacing="-1">
+    Atık faturasını yeşil
+  </text>
+  <text x="80" y="395" font-family="-apple-system, BlinkMacSystemFont, Inter, sans-serif" font-size="64" font-weight="700" letter-spacing="-1">
+    <tspan fill="white">kredi kanıtına</tspan>
+    <tspan fill="#86efac" dx="14">dönüştür</tspan>
+  </text>
+
+  <!-- Badges -->
+  <g font-family="-apple-system, BlinkMacSystemFont, Inter, sans-serif" font-size="20" font-weight="600">
+    <g transform="translate(80, 460)">
+      <rect width="190" height="44" rx="22" fill="#dcfce7"/>
+      <text x="95" y="29" fill="#15803d" text-anchor="middle">BDDK YVO uyumlu</text>
+    </g>
+    <g transform="translate(290, 460)">
+      <rect width="170" height="44" rx="22" fill="#dcfce7"/>
+      <text x="85" y="29" fill="#15803d" text-anchor="middle">GHG Protocol</text>
+    </g>
+    <g transform="translate(480, 460)">
+      <rect width="170" height="44" rx="22" fill="#dcfce7"/>
+      <text x="85" y="29" fill="#15803d" text-anchor="middle">Ed25519 imzalı</text>
+    </g>
+    <g transform="translate(670, 460)">
+      <rect width="160" height="44" rx="22" fill="#dcfce7"/>
+      <text x="80" y="29" fill="#15803d" text-anchor="middle">Açık çekirdek</text>
+    </g>
+  </g>
+
+  <!-- Footer URL -->
+  <text x="80" y="580" font-family="SF Mono, Menlo, Consolas, monospace" font-size="22" fill="#86efac">
+    github.com/memirutku/rebot-api
+  </text>
+  <text x="1120" y="580" font-family="-apple-system, BlinkMacSystemFont, Inter, sans-serif" font-size="18" fill="#94a3b8" text-anchor="end">
+    Apache 2.0 + CC BY-SA 4.0
+  </text>
+</svg>

@@ -3,14 +3,25 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>REBOT ENERGY — KOBİ ESG doğrulama ve yeşil fintech API'si</title>
-<meta name="description" content="KOBİ faturalarını BDDK YVO Tebliği uyumlu, GHG Protocol hesaplı, imzalı ESG verisine dönüştüren açık çekirdek API. Türkiye'nin BDDK YVO için yerli açık veri standardı." />
+<title data-tr="REBOT ENERGY — KOBİ ESG doğrulama ve yeşil fintech API'si"
+       data-en="REBOT ENERGY — SME ESG verification and green-fintech API">
+  REBOT ENERGY — KOBİ ESG doğrulama ve yeşil fintech API'si
+</title>
+<meta name="description"
+      data-tr="KOBİ faturalarını BDDK YVO Tebliği uyumlu, GHG Protocol hesaplı, imzalı ESG verisine dönüştüren açık çekirdek API."
+      data-en="Open-core API that converts SME invoices into BDDK YVO + GHG Protocol compliant, signed ESG data."
+      content="KOBİ faturalarını BDDK YVO Tebliği uyumlu, GHG Protocol hesaplı, imzalı ESG verisine dönüştüren açık çekirdek API." />
 <meta property="og:title" content="REBOT ENERGY — KOBİ ESG doğrulama API'si" />
-<meta property="og:description" content="Atık taşıma faturasını imzalı YVO bundle'a dönüştüren open-core API. Apache 2.0 + CC BY-SA 4.0." />
+<meta property="og:description" content="Atık taşıma faturasını imzalı YVO bundle'a dönüştüren açık çekirdek API. Apache 2.0 + CC BY-SA 4.0." />
 <meta property="og:type" content="website" />
+<meta property="og:url" content="https://memirutku.github.io/rebot-api/" />
+<meta property="og:image" content="https://memirutku.github.io/rebot-api/og-image.svg" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="icon" type="image/svg+xml" href="favicon.svg" />
 <style>
   :root {
     --green: #15803d;
+    --green-dark: #166534;
     --green-light: #dcfce7;
     --ink: #0f172a;
     --muted: #64748b;
@@ -20,7 +31,7 @@
     --code-fg: #e2e8f0;
   }
   * { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; }
+  html, body { margin: 0; padding: 0; scroll-behavior: smooth; }
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", sans-serif;
     color: var(--ink);
@@ -28,14 +39,45 @@
     -webkit-font-smoothing: antialiased;
   }
   .container { max-width: 980px; margin: 0 auto; padding: 0 24px; }
-  header { padding: 24px 0; border-bottom: 1px solid var(--border); }
+
+  header { padding: 20px 0; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: rgba(255,255,255,0.92); backdrop-filter: blur(6px); z-index: 10; }
   header .nav { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
   header .brand { font-weight: 700; font-size: 18px; letter-spacing: -0.01em; }
   header .brand .leaf { color: var(--green); }
-  header nav a { color: var(--ink); text-decoration: none; margin-left: 18px; font-size: 14px; opacity: 0.75; }
+  header nav { display: flex; align-items: center; gap: 18px; }
+  header nav a { color: var(--ink); text-decoration: none; font-size: 14px; opacity: 0.75; }
   header nav a:hover { opacity: 1; }
 
-  .hero { padding: 80px 0 56px; }
+  .lang-toggle {
+    display: inline-flex;
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 2px;
+    margin-left: 4px;
+  }
+  .lang-toggle button {
+    background: transparent;
+    border: 0;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 999px;
+    color: var(--muted);
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .lang-toggle button.active {
+    background: var(--green);
+    color: white;
+  }
+
+  section { padding: 56px 0; border-top: 1px solid var(--border); scroll-margin-top: 80px; }
+  section:first-of-type { border-top: 0; }
+  section h2 { font-size: 28px; margin: 0 0 12px; letter-spacing: -0.01em; }
+  section p.section-lede { color: var(--muted); font-size: 16px; max-width: 720px; margin-bottom: 32px; }
+
+  .hero { padding: 72px 0 56px; border-top: 0; scroll-margin-top: 80px; }
   .hero h1 { font-size: 44px; line-height: 1.15; margin: 0 0 16px; letter-spacing: -0.02em; }
   .hero h1 .accent { color: var(--green); }
   .hero p.lede { font-size: 19px; color: var(--muted); margin: 0 0 32px; max-width: 720px; }
@@ -44,13 +86,9 @@
   .cta-row { display: flex; gap: 12px; flex-wrap: wrap; }
   .btn { display: inline-block; padding: 12px 18px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 15px; }
   .btn-primary { background: var(--green); color: white; }
-  .btn-primary:hover { background: #166534; }
+  .btn-primary:hover { background: var(--green-dark); }
   .btn-secondary { background: white; color: var(--ink); border: 1px solid var(--border); }
   .btn-secondary:hover { background: var(--bg-soft); }
-
-  section { padding: 56px 0; border-top: 1px solid var(--border); }
-  section h2 { font-size: 28px; margin: 0 0 12px; letter-spacing: -0.01em; }
-  section p.section-lede { color: var(--muted); font-size: 16px; max-width: 720px; margin-bottom: 32px; }
 
   .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
   .card { padding: 20px; border: 1px solid var(--border); border-radius: 10px; background: white; }
@@ -60,6 +98,7 @@
   pre { background: var(--code-bg); color: var(--code-fg); padding: 18px 20px; border-radius: 10px; overflow-x: auto; font-size: 13.5px; line-height: 1.55; }
   code { font-family: "SF Mono", Menlo, Consolas, monospace; }
   pre code { color: inherit; }
+
   .flow {
     display: grid;
     grid-template-columns: 1fr auto 1fr auto 1fr;
@@ -69,6 +108,7 @@
   }
   .flow .box { padding: 14px 16px; background: var(--bg-soft); border: 1px solid var(--border); border-radius: 8px; text-align: center; font-size: 14px; }
   .flow .arrow { color: var(--green); font-size: 20px; text-align: center; font-weight: 700; }
+  .flow .arrow-mobile { display: none; }
 
   .feature-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
   .feature-pair .col { padding: 18px; border: 1px solid var(--border); border-radius: 10px; }
@@ -80,13 +120,21 @@
 
   footer { padding: 40px 0; color: var(--muted); font-size: 13px; border-top: 1px solid var(--border); }
   footer a { color: var(--green); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  /* Show/hide content based on active language */
+  [data-lang]:not(.active-lang) { display: none; }
 
   @media (max-width: 720px) {
-    .hero h1 { font-size: 32px; }
+    .hero { padding: 48px 0 40px; }
+    .hero h1 { font-size: 30px; }
+    section { padding: 40px 0; }
     .grid-3 { grid-template-columns: 1fr; }
     .feature-pair { grid-template-columns: 1fr; }
     .flow { grid-template-columns: 1fr; }
-    .flow .arrow { transform: rotate(90deg); }
+    .flow .arrow { display: none; }
+    .flow .arrow-mobile { display: block; color: var(--green); font-size: 22px; text-align: center; font-weight: 700; line-height: 1; }
+    header nav a:not(.lang-toggle-wrap) { display: none; }
   }
 </style>
 </head>
@@ -96,10 +144,14 @@
   <div class="container nav">
     <div class="brand"><span class="leaf">🌱</span> REBOT ENERGY</div>
     <nav>
-      <a href="#what">Ne yapıyoruz</a>
-      <a href="#how">Nasıl çalışır</a>
-      <a href="#try">Dene</a>
+      <a href="#what" data-tr="Ne yapıyoruz" data-en="What we do">Ne yapıyoruz</a>
+      <a href="#how" data-tr="Nasıl çalışır" data-en="How it works">Nasıl çalışır</a>
+      <a href="#open" data-tr="Aç&iacute;k çekirdek" data-en="Open core">Açık çekirdek</a>
       <a href="https://github.com/memirutku/rebot-api">GitHub</a>
+      <div class="lang-toggle" role="group" aria-label="Language">
+        <button type="button" data-set-lang="tr" class="active">TR</button>
+        <button type="button" data-set-lang="en">EN</button>
+      </div>
     </nav>
   </div>
 </header>
@@ -107,40 +159,69 @@
 <section class="hero">
   <div class="container">
     <div class="badges">
-      <span class="badge">Open core</span>
-      <span class="badge">BDDK YVO uyumlu</span>
+      <span class="badge" data-tr="Açık çekirdek" data-en="Open core">Açık çekirdek</span>
+      <span class="badge" data-tr="BDDK YVO uyumlu" data-en="BDDK YVO compliant">BDDK YVO uyumlu</span>
       <span class="badge">GHG Protocol</span>
-      <span class="badge">Ed25519 imzalı</span>
+      <span class="badge" data-tr="Ed25519 imzalı" data-en="Ed25519 signed">Ed25519 imzalı</span>
     </div>
-    <h1>KOBİ atık faturasını <span class="accent">yeşil kredi kanıtına</span> dönüştüren açık çekirdek API.</h1>
-    <p class="lede">
+
+    <h1 data-lang="tr" class="active-lang">
+      KOBİ atık faturasını <span class="accent">yeşil kredi kanıtına</span> dönüştüren açık çekirdek API.
+    </h1>
+    <h1 data-lang="en">
+      Turning SME waste invoices into <span class="accent">green-loan evidence</span> — an open-core API.
+    </h1>
+
+    <p class="lede" data-lang="tr">
       BDDK Yeşil Varlık Oranı Tebliği (Nisan 2025) bankalardan bağımsız doğrulanmış çevresel veri talep ediyor.
       KOBİlerde bu veri yok. REBOT, faturayı alıp <strong>GHG Protocol</strong>'a göre karbon hesabını yapar,
       <strong>BDDK YVO Ek-1</strong>'e eşler, sonucu <strong>Ed25519 imzalı</strong> bir bundle olarak bankaya sunar.
     </p>
+    <p class="lede" data-lang="en">
+      Turkey's Green Asset Ratio Regulation (April 2025) requires banks to back green loan portfolios with
+      independently verified environmental data. SMEs cannot produce it. REBOT ingests their utility invoices,
+      runs <strong>GHG Protocol</strong> accounting, maps to <strong>BDDK YVO Annex&nbsp;1</strong>, and emits an
+      <strong>Ed25519&nbsp;signed</strong> bundle for the bank.
+    </p>
+
     <div class="cta-row">
-      <a class="btn btn-primary" href="https://rebot-api.onrender.com/docs">Swagger UI'da dene</a>
-      <a class="btn btn-secondary" href="https://github.com/memirutku/rebot-api">GitHub'da incele</a>
+      <a class="btn btn-primary" href="https://rebot-api.onrender.com/docs"
+         data-tr="Swagger UI'da dene" data-en="Try it on Swagger UI">Swagger UI'da dene</a>
+      <a class="btn btn-secondary" href="https://github.com/memirutku/rebot-api"
+         data-tr="GitHub'da incele" data-en="View on GitHub">GitHub'da incele</a>
     </div>
   </div>
 </section>
 
 <section id="what">
   <div class="container">
-    <h2>Türkiye için neden gerekli</h2>
-    <p class="section-lede">YVO Tebliği yürürlükte ama makine-okunabilir bir açık veri standardı yok. KOBİ ile banka arasındaki veri köprüsünü REBOT kuruyor.</p>
+    <h2 data-tr="Türkiye için neden gerekli" data-en="Why this matters for Turkey">Türkiye için neden gerekli</h2>
+    <p class="section-lede"
+       data-tr="YVO Tebliği yürürlükte ama makine-okunabilir bir açık veri standardı yok. KOBİ ile banka arasındaki veri köprüsünü REBOT kuruyor."
+       data-en="The YVO regulation is in force, yet there is no machine-readable open data standard. REBOT bridges the data gap between SMEs and banks.">
+      YVO Tebliği yürürlükte ama makine-okunabilir bir açık veri standardı yok. KOBİ ile banka arasındaki veri köprüsünü REBOT kuruyor.
+    </p>
     <div class="grid-3">
       <div class="card">
-        <h3>📜 Regülasyon hazır</h3>
-        <p>Nisan 2025 YVO Tebliği bankaları doğrulanmış ESG verisiyle raporlamaya zorluyor. Haziran 2025'ten itibaren mecburi.</p>
+        <h3 data-tr="📜 Regülasyon hazır" data-en="📜 The rules are already in force">📜 Regülasyon hazır</h3>
+        <p data-tr="Nisan 2025 YVO Tebliği bankaları doğrulanmış ESG verisiyle raporlamaya zorluyor. Haziran 2025'ten itibaren mecburi."
+           data-en="The April 2025 YVO regulation requires banks to report with verified ESG data. Mandatory from June 2025.">
+          Nisan 2025 YVO Tebliği bankaları doğrulanmış ESG verisiyle raporlamaya zorluyor. Haziran 2025'ten itibaren mecburi.
+        </p>
       </div>
       <div class="card">
-        <h3>🔢 Veri yok</h3>
-        <p>KOBİlerin atık/karbon verisi ya hiç ölçülmüyor ya da kendi beyanı. Banka bunu doğrulayamıyor.</p>
+        <h3 data-tr="🔢 Veri yok" data-en="🔢 No real data">🔢 Veri yok</h3>
+        <p data-tr="KOBİlerin atık/karbon verisi ya hiç ölçülmüyor ya da kendi beyanı. Banka bunu doğrulayamıyor."
+           data-en="SME waste and carbon data is either unmeasured or self-reported. Banks have no way to verify it.">
+          KOBİlerin atık/karbon verisi ya hiç ölçülmüyor ya da kendi beyanı. Banka bunu doğrulayamıyor.
+        </p>
       </div>
       <div class="card">
-        <h3>🌍 AB ile uyumlu</h3>
-        <p>EFRAG VSME XBRL ile birlikte çalışabilirlik hedefli. CBAM (2026) ile ihracatçı KOBİ'lere de uyumlu.</p>
+        <h3 data-tr="🌍 AB ile uyumlu" data-en="🌍 EU-aligned">🌍 AB ile uyumlu</h3>
+        <p data-tr="EFRAG VSME XBRL ile birlikte çalışabilirlik hedefli. CBAM (2026) ile ihracatçı KOBİ'lere de uyumlu."
+           data-en="Designed to interoperate with EFRAG VSME XBRL. Compatible with CBAM (2026) for exporting SMEs.">
+          EFRAG VSME XBRL ile birlikte çalışabilirlik hedefli. CBAM (2026) ile ihracatçı KOBİ'lere de uyumlu.
+        </p>
       </div>
     </div>
   </div>
@@ -148,16 +229,33 @@
 
 <section id="how">
   <div class="container">
-    <h2>Üç katmanlı veri akışı</h2>
-    <p class="section-lede">Tamamı açık, deterministik, denetlenebilir. Banka REBOT'a değil, REBOT'un imzasına güvenir.</p>
+    <h2 data-tr="Üç katmanlı veri akışı" data-en="Three-layer data flow">Üç katmanlı veri akışı</h2>
+    <p class="section-lede"
+       data-tr="Tamamı açık, deterministik, denetlenebilir. Banka REBOT'a değil, REBOT'un imzasına güvenir."
+       data-en="Fully open, deterministic, auditable. Banks trust the signature, not the operator.">
+      Tamamı açık, deterministik, denetlenebilir. Banka REBOT'a değil, REBOT'un imzasına güvenir.
+    </p>
     <div class="flow">
-      <div class="box"><strong>1. Ingest</strong><br/>Fatura JSON → normalize</div>
+      <div class="box" data-lang="tr"><strong>1. Ingest</strong><br/>Fatura JSON → normalize</div>
+      <div class="box" data-lang="en"><strong>1. Ingest</strong><br/>Invoice JSON → normalize</div>
       <div class="arrow">→</div>
-      <div class="box"><strong>2. Verify</strong><br/>GHG Protocol Scope 3.5</div>
+      <div class="arrow-mobile">↓</div>
+      <div class="box" data-lang="tr"><strong>2. Doğrula</strong><br/>GHG Protocol Scope 3.5</div>
+      <div class="box" data-lang="en"><strong>2. Verify</strong><br/>GHG Protocol Scope 3.5</div>
       <div class="arrow">→</div>
-      <div class="box"><strong>3. Emit</strong><br/>BDDK YVO + Ed25519 imza</div>
+      <div class="arrow-mobile">↓</div>
+      <div class="box" data-lang="tr"><strong>3. Sun</strong><br/>BDDK YVO + Ed25519 imza</div>
+      <div class="box" data-lang="en"><strong>3. Emit</strong><br/>BDDK YVO + Ed25519 signature</div>
     </div>
-<pre><code># Tek satırlık demo
+<pre data-lang="tr"><code># Tek satırlık demo
+curl -X POST https://rebot-api.onrender.com/v1/ingest \
+     -H "Content-Type: application/json" \
+     -d @examples/requests/waste_ingest.json
+
+curl "https://rebot-api.onrender.com/v1/esg/9876543210?period=2025-Q2"
+# → { "bundle": {...}, "signature": { "algorithm": "Ed25519", ... } }
+</code></pre>
+<pre data-lang="en"><code># One-liner demo
 curl -X POST https://rebot-api.onrender.com/v1/ingest \
      -H "Content-Type: application/json" \
      -d @examples/requests/waste_ingest.json
@@ -168,29 +266,47 @@ curl "https://rebot-api.onrender.com/v1/esg/9876543210?period=2025-Q2"
   </div>
 </section>
 
-<section id="try">
+<section id="open">
   <div class="container">
-    <h2>Açık çekirdek modeli</h2>
-    <p class="section-lede">Motor topluluğa açık; ticari katman REBOT ENERGY tarafından sürülür.</p>
+    <h2 data-tr="Açık çekirdek modeli" data-en="Open-core model">Açık çekirdek modeli</h2>
+    <p class="section-lede"
+       data-tr="Motor topluluğa açık; ticari katman REBOT ENERGY tarafından sürülür."
+       data-en="Core engine is community-owned; the commercial layer is operated by REBOT ENERGY.">
+      Motor topluluğa açık; ticari katman REBOT ENERGY tarafından sürülür.
+    </p>
     <div class="feature-pair">
       <div class="col col-open">
-        <h4>✅ AÇIK (Apache 2.0 + CC BY-SA 4.0)</h4>
-        <ul>
-          <li>FastAPI ingest/esg/factors/signing endpoint'leri</li>
-          <li>GHG Protocol Scope 3.5 verifier</li>
-          <li>BDDK YVO Ek-1 mapper'ı</li>
+        <h4 data-tr="✅ AÇIK (Apache 2.0 + CC BY-SA 4.0)" data-en="✅ OPEN (Apache 2.0 + CC BY-SA 4.0)">✅ AÇIK (Apache 2.0 + CC BY-SA 4.0)</h4>
+        <ul data-lang="tr">
+          <li>FastAPI ingest/esg/factors/signing uç noktaları</li>
+          <li>GHG Protocol Scope 3.5 doğrulayıcısı</li>
+          <li>BDDK YVO Ek-1 eşleyicisi</li>
           <li>JSON şemalar (banka entegrasyon sözleşmesi)</li>
           <li>DEFRA 2024 + TEİAŞ 2023 emisyon faktör kataloğu</li>
         </ul>
+        <ul data-lang="en">
+          <li>FastAPI ingest / esg / factors / signing endpoints</li>
+          <li>GHG Protocol Scope 3.5 verifier</li>
+          <li>BDDK YVO Annex 1 mapper</li>
+          <li>JSON schemas (bank integration contract)</li>
+          <li>DEFRA 2024 + TEİAŞ 2023 emission-factor catalogue</li>
+        </ul>
       </div>
       <div class="col col-closed">
-        <h4>🔒 KAPALI (ticari premium)</h4>
-        <ul>
+        <h4 data-tr="🔒 KAPALI (ticari premium)" data-en="🔒 CLOSED (commercial)">🔒 KAPALI (ticari premium)</h4>
+        <ul data-lang="tr">
           <li>Banka konektörleri (KEP, e-arşiv)</li>
           <li>Multi-tenant SaaS + faturalama</li>
-          <li>Audit dashboard / regulator portal</li>
-          <li>KOBİ onboarding UI</li>
+          <li>Denetim panosu / regülatör portali</li>
+          <li>KOBİ kayıt akışı arayüzü</li>
           <li>Sürekli izleme + alarm motoru</li>
+        </ul>
+        <ul data-lang="en">
+          <li>Bank connectors (KEP, e-archive)</li>
+          <li>Multi-tenant SaaS + billing</li>
+          <li>Audit dashboard / regulator portal</li>
+          <li>SME onboarding UI</li>
+          <li>Continuous-monitoring + alert engine</li>
         </ul>
       </div>
     </div>
@@ -199,20 +315,33 @@ curl "https://rebot-api.onrender.com/v1/esg/9876543210?period=2025-Q2"
 
 <section>
   <div class="container">
-    <h2>Şimdi sıradakiler</h2>
-    <p class="section-lede">Mevcut sürüm atık tarafında uçtan uca çalışıyor. Yol haritasındaki sonraki adımlar:</p>
+    <h2 data-tr="Şimdi sıradakiler" data-en="What's next">Şimdi sıradakiler</h2>
+    <p class="section-lede"
+       data-tr="Mevcut sürüm atık tarafında uçtan uca çalışıyor. Yol haritasındaki sonraki adımlar:"
+       data-en="The current build is end-to-end on the waste vertical. Next on the roadmap:">
+      Mevcut sürüm atık tarafında uçtan uca çalışıyor. Yol haritasındaki sonraki adımlar:
+    </p>
     <div class="grid-3">
       <div class="card">
-        <h3>⚡ Elektrik faturası</h3>
-        <p>EPDK formatlı faturalardan Scope 2 (TR şebeke ortalaması + YEK-G market-based).</p>
+        <h3 data-tr="⚡ Elektrik faturası" data-en="⚡ Electricity invoice">⚡ Elektrik faturası</h3>
+        <p data-tr="EPDK formatlı faturalardan Scope 2 (TR şebeke ortalaması + YEK-G market-based)."
+           data-en="Scope 2 from EPDK-formatted bills (TR grid average + YEK-G market-based).">
+          EPDK formatlı faturalardan Scope 2 (TR şebeke ortalaması + YEK-G market-based).
+        </p>
       </div>
       <div class="card">
-        <h3>💧 Su faturası</h3>
-        <p>İSKİ/İZSU/ASKİ örnekleri ile Scope 3.4 (su tedariği + atık su).</p>
+        <h3 data-tr="💧 Su faturası" data-en="💧 Water invoice">💧 Su faturası</h3>
+        <p data-tr="İSKİ/İZSU/ASKİ örnekleri ile Scope 3.4 (su tedariği + atık su)."
+           data-en="Scope 3.4 from İSKİ/İZSU/ASKİ formats (supply + wastewater).">
+          İSKİ/İZSU/ASKİ örnekleri ile Scope 3.4 (su tedariği + atık su).
+        </p>
       </div>
       <div class="card">
-        <h3>🚛 Lojistik & yakıt</h3>
-        <p>Akaryakıt fişi + km bazlı kombine Scope 1 mobil yakıt.</p>
+        <h3 data-tr="🚛 Lojistik & yakıt" data-en="🚛 Logistics & fuel">🚛 Lojistik & yakıt</h3>
+        <p data-tr="Akaryakıt fişi + km bazlı kombine Scope 1 mobil yakıt."
+           data-en="Fuel receipts + km-based mobile combustion (Scope 1).">
+          Akaryakıt fişi + km bazlı kombine Scope 1 mobil yakıt.
+        </p>
       </div>
     </div>
   </div>
@@ -220,12 +349,70 @@ curl "https://rebot-api.onrender.com/v1/esg/9876543210?period=2025-Q2"
 
 <footer>
   <div class="container">
-    <p>
-      REBOT ENERGY • Open source: <a href="https://github.com/memirutku/rebot-api">github.com/memirutku/rebot-api</a> • API: <a href="https://rebot-api.onrender.com">rebot-api.onrender.com</a><br/>
+    <p data-lang="tr">
+      REBOT ENERGY • Açık kaynak: <a href="https://github.com/memirutku/rebot-api">github.com/memirutku/rebot-api</a> • API: <a href="https://rebot-api.onrender.com">rebot-api.onrender.com</a><br/>
       Kod: Apache 2.0 — Veri ve şemalar: CC BY-SA 4.0
+    </p>
+    <p data-lang="en">
+      REBOT ENERGY • Open source: <a href="https://github.com/memirutku/rebot-api">github.com/memirutku/rebot-api</a> • API: <a href="https://rebot-api.onrender.com">rebot-api.onrender.com</a><br/>
+      Code: Apache 2.0 — Data & schemas: CC BY-SA 4.0
     </p>
   </div>
 </footer>
+
+<script>
+(function () {
+  const STORAGE_KEY = "rebot.lang";
+  const supported = ["tr", "en"];
+
+  function detectInitial() {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored && supported.includes(stored)) return stored;
+    const browser = (navigator.language || "tr").slice(0, 2).toLowerCase();
+    return supported.includes(browser) ? browser : "tr";
+  }
+
+  function applyLang(lang) {
+    document.documentElement.lang = lang;
+
+    // Block-level swap: elements with data-lang show only the matching one
+    document.querySelectorAll("[data-lang]").forEach((el) => {
+      el.classList.toggle("active-lang", el.getAttribute("data-lang") === lang);
+    });
+
+    // Inline swap: elements with both data-tr and data-en text content
+    document.querySelectorAll("[data-tr][data-en]").forEach((el) => {
+      const next = el.getAttribute("data-" + lang);
+      if (!next) return;
+      // Title gets text only; everything else can carry markup-free phrase
+      if (el.tagName === "TITLE") el.textContent = next;
+      else el.innerHTML = next;
+    });
+
+    // Meta description swap
+    const meta = document.querySelector('meta[name="description"]');
+    if (meta) {
+      const next = meta.getAttribute("data-" + lang);
+      if (next) meta.setAttribute("content", next);
+    }
+
+    // Toggle button active state
+    document.querySelectorAll("[data-set-lang]").forEach((btn) => {
+      btn.classList.toggle("active", btn.getAttribute("data-set-lang") === lang);
+      btn.setAttribute("aria-pressed", btn.getAttribute("data-set-lang") === lang);
+    });
+
+    localStorage.setItem(STORAGE_KEY, lang);
+  }
+
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-set-lang]");
+    if (btn) applyLang(btn.getAttribute("data-set-lang"));
+  });
+
+  applyLang(detectInitial());
+})();
+</script>
 
 </body>
 </html>
