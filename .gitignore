@@ -34,3 +34,7 @@ Thumbs.db
 .coverage
 htmlcov/
 coverage.xml
+
+# Private project documents — kept locally, not published in repo
+PROJECT.md
+DATA-ROADMAP.md
