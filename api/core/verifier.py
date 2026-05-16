@@ -12,6 +12,7 @@ from decimal import Decimal
 from pydantic import BaseModel, Field
 
 from api.core import factors as factors_core
+from api.core import waste_codes as ewc_catalogue
 from api.models.invoice import WasteLineItem
 
 # Conservative fallback used when no specific factor matches. Equivalent to
@@ -25,9 +26,9 @@ ENERGY_RECOVERY_CODES = {"R1"}        # Energy recovery
 LANDFILL_CODES = {"D1", "D5"}
 INCINERATION_CODES = {"D10", "D11"}
 
-# EWC prefixes (2-digit chapter) that indicate organic / biodegradable waste.
-ORGANIC_EWC_PREFIXES = {"02", "03"}  # agriculture, food, wood
-ORGANIC_EWC_CODES_BIO = {"20 01 08", "20 02 01"}  # kitchen biodegradable, garden waste
+# Organic detection now prefers the EWC catalogue (ewc_tr.json). The prefix
+# fallback below catches codes we haven't yet enumerated.
+ORGANIC_EWC_PREFIXES_FALLBACK = {"02", "03"}  # agriculture, food, wood
 
 UNIT_TO_TONNES: dict[str, Decimal] = {
     "kg": Decimal("0.001"),
@@ -74,9 +75,8 @@ def _pick_factor_id(line: WasteLineItem) -> tuple[str, list[str]]:
         return "waste.hazardous.incineration", notes
 
     if code in RECYCLING_CODES:
-        ewc_compact = ewc.replace(" ", "")
-        prefix = ewc_compact[:2]
-        if ewc in ORGANIC_EWC_CODES_BIO or prefix in ORGANIC_EWC_PREFIXES:
+        prefix = ewc.replace(" ", "")[:2]
+        if ewc_catalogue.is_organic(ewc) or prefix in ORGANIC_EWC_PREFIXES_FALLBACK:
             return "waste.organic.composting", notes
         return "waste.mixed_commercial.recycling", notes
 

@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from api import __version__
-from api.routers import esg, factors, ingest, signing
+from api.routers import esg, factors, ingest, signing, waste_codes
 
 app = FastAPI(
     title="REBOT API",
@@ -24,6 +24,7 @@ app = FastAPI(
         {"name": "esg", "description": "BDDK YVO compliant ESG bundle for an SME"},
         {"name": "signing", "description": "Public key for verifying signed bundles"},
         {"name": "factors", "description": "Open emission factor catalogue (CC BY-SA 4.0)"},
+        {"name": "waste-codes", "description": "EWC (European Waste Catalogue) Turkish lookup"},
     ],
     swagger_ui_parameters={
         # Hide the noisy bottom-of-page "Schemas" section — Pydantic models are
@@ -48,6 +49,7 @@ app.include_router(ingest.router, prefix="/v1")
 app.include_router(esg.router, prefix="/v1")
 app.include_router(signing.router, prefix="/v1")
 app.include_router(factors.router, prefix="/v1")
+app.include_router(waste_codes.router, prefix="/v1")
 
 
 @app.get("/", tags=["meta"], summary="Service banner")
