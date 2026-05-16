@@ -3,7 +3,6 @@ services:
     name: rebot-api
     runtime: python
     plan: free
-    pythonVersion: "3.12"
     buildCommand: pip install -e .
     startCommand: uvicorn api.main:app --host 0.0.0.0 --port $PORT
     envVars:
