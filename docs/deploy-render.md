@@ -64,6 +64,7 @@ Render free web service **15 dakika inaktiviteden sonra uyur**. İlk istek 30-60
 
 | Hata | Çözüm |
 |---|---|
-| "Build failed: pip install -e ." | Python sürümü 3.12'den farklı olabilir. `render.yaml` içindeki `pythonVersion: "3.12"` kontrol et. |
+| "A Blueprint file was found, but there was an issue" + `field pythonVersion not found in type file.Service` | Render Blueprint schema'sı service altında `pythonVersion` kabul etmiyor. Python sürümü `PYTHON_VERSION` env var ve `.python-version` dosyasından okunur (repo'da ikisi de var). |
+| "Build failed: pip install -e ." | Python sürümü uyumsuz olabilir. `.python-version` ve `PYTHON_VERSION` env var'ın 3.12.x olduğunu kontrol et. |
 | 502 Bad Gateway | Build başarılı ama uvicorn `$PORT` dinlemiyor olabilir. Loglarda `Uvicorn running on http://0.0.0.0:...` görmeli. |
 | Uyandırma çok uzun sürüyor | Free tier kısıtı. Cron-ping kur veya Starter plana yükselt. |
