@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse
 
 from api import __version__
+from api.i18n import translate as tr
 from api.routers import esg, factors, ingest, signing, waste_codes
 
 # Two-language metadata. The OpenAPI spec is generated once in Turkish (default
@@ -81,8 +82,33 @@ app.include_router(factors.router, prefix="/v1")
 app.include_router(waste_codes.router, prefix="/v1")
 
 
+TRANSLATABLE_KEYS = {"summary", "description", "title"}
+
+
+def _translate_in_place(node: object, lang: str) -> None:
+    """Recursively walk an OpenAPI dict and translate description/summary/title
+    string leaves. Only TR triggers translation; EN leaves the English text
+    untouched (since the source spec is generated in English)."""
+    if lang != "tr":
+        return
+    if isinstance(node, dict):
+        for k, v in node.items():
+            if k in TRANSLATABLE_KEYS and isinstance(v, str):
+                node[k] = tr(v)
+            else:
+                _translate_in_place(v, lang)
+    elif isinstance(node, list):
+        for item in node:
+            _translate_in_place(item, lang)
+
+
 def _spec_in(lang: str) -> dict:
-    """Return an OpenAPI dict translated to the requested top-level language."""
+    """Return an OpenAPI dict translated to the requested language.
+
+    Top-level info.title / info.description / tag descriptions are swapped via
+    META_TR / META_EN; everything else (path summaries, parameter descriptions,
+    schema field titles and descriptions) is translated via api.i18n.translate.
+    """
     spec = copy.deepcopy(app.openapi())
     meta = META_EN if lang == "en" else META_TR
     spec["info"]["title"] = meta["title"]
@@ -91,6 +117,13 @@ def _spec_in(lang: str) -> dict:
         new_desc = meta["tags"].get(tag["name"])
         if new_desc:
             tag["description"] = new_desc
+
+    # Recursively translate everything else when serving the Turkish spec.
+    if lang == "tr":
+        for section in ("paths", "components"):
+            if section in spec:
+                _translate_in_place(spec[section], lang)
+
     return spec
 
 
