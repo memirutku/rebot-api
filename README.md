@@ -42,9 +42,15 @@ uvicorn api.main:app --reload
 🟢 **https://rebot-api.onrender.com** — Swagger UI: [/docs](https://rebot-api.onrender.com/docs)
 
 ```bash
+# Health + emisyon faktörleri
 curl https://rebot-api.onrender.com/health
 curl "https://rebot-api.onrender.com/v1/factors?region=TR"
 curl https://rebot-api.onrender.com/v1/factors/electricity.tr.grid_average
+
+# Atık taşıma faturası gönder → normalize edilmiş kayıt al
+curl -X POST https://rebot-api.onrender.com/v1/ingest \
+  -H "Content-Type: application/json" \
+  -d @examples/requests/waste_ingest.json
 ```
 
 > ⚠️ Render free tier — 15 dakika inaktiviteden sonra uyur. **İlk istek 30-60 saniye** sürebilir (cold start), sonraki istekler hızlı. Deploy adımları: [`docs/deploy-render.md`](docs/deploy-render.md).
@@ -93,7 +99,7 @@ See **Hızlı başlangıç** above — same commands.
 
 - [x] Repo scaffold, FastAPI iskelet, `/v1/factors`
 - [x] Canlı demo (Render)
-- [ ] `parser/waste.py` — atık taşıma faturası (DEFRA referans)
+- [x] `parser/waste.py` JSON yolu + `POST /v1/ingest` + dedupe (PDF parser bekliyor)
 - [ ] `parser/electricity.py` — EPDK formatlı elektrik faturası
 - [ ] `parser/water.py` — İSKİ/İZSU/ASKİ örnekleri
 - [ ] `parser/logistics.py` — akaryakıt + km bazlı

@@ -1,0 +1,27 @@
+{
+  "invoice_type": "waste",
+  "invoice_number": "ATK-2025-00042",
+  "invoice_date": "2025-04-12",
+  "issuer_tax_id": "1234567890",
+  "issuer_name": "ACME Atık Taşıma A.Ş.",
+  "customer_tax_id": "9876543210",
+  "customer_name": "Demo KOBİ Ltd.",
+  "lines": [
+    {
+      "ewc_code": "20 03 01",
+      "description": "Karışık ticari atık",
+      "quantity": "2.5",
+      "unit": "tonne",
+      "disposal_method": "R3",
+      "uatf_number": "UATF-2025-0001"
+    },
+    {
+      "ewc_code": "200201",
+      "description": "Bahçe atığı (biyolojik bozunabilir)",
+      "quantity": "180",
+      "unit": "kg",
+      "disposal_method": "R3"
+    }
+  ],
+  "total_amount_try": "4250.00"
+}
