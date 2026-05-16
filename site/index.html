@@ -80,8 +80,11 @@
     color: white;
   }
   .lang-toggle .flag {
-    font-size: 16px;
-    line-height: 1;
+    width: 20px;
+    height: 14px;
+    border-radius: 2px;
+    display: block;
+    object-fit: cover;
   }
 
   section { padding: 56px 0; border-top: 1px solid var(--border); scroll-margin-top: 80px; }
@@ -148,7 +151,7 @@
     .flow .arrow-mobile { display: block; color: var(--green); font-size: 22px; text-align: center; font-weight: 700; line-height: 1; }
     header nav a:not(.lang-toggle-wrap) { display: none; }
     .lang-toggle button { padding: 5px 10px; font-size: 13px; }
-    .lang-toggle .flag { font-size: 14px; }
+    .lang-toggle .flag { width: 18px; height: 12px; }
   }
 </style>
 </head>
@@ -164,10 +167,10 @@
       <a href="https://github.com/memirutku/rebot-api">GitHub</a>
       <div class="lang-toggle" role="group" aria-label="Dil / Language">
         <button type="button" data-set-lang="tr" class="active" aria-pressed="true">
-          <span class="flag" aria-hidden="true">🇹🇷</span><span>TR</span>
+          <img class="flag" src="flag-tr.svg" alt="" width="20" height="14" aria-hidden="true"><span>TR</span>
         </button>
         <button type="button" data-set-lang="en" aria-pressed="false">
-          <span class="flag" aria-hidden="true">🇬🇧</span><span>EN</span>
+          <img class="flag" src="flag-gb.svg" alt="" width="20" height="14" aria-hidden="true"><span>EN</span>
         </button>
       </div>
     </nav>
