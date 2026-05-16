@@ -58,6 +58,11 @@ target-version = "py311"
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP", "SIM"]
 
+[tool.ruff.lint.per-file-ignores]
+# api/main.py embeds a Swagger UI HTML template with unavoidable long lines
+# (CDN URLs, inline SVG favicon as data URI).
+"api/main.py" = ["E501"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-ra --strict-markers"
