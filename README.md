@@ -38,7 +38,16 @@ uvicorn api.main:app --reload
 ```
 
 ### Canlı demo
-> Render'da deploy edildikten sonra link buraya gelecek. Deploy adımları: [`docs/deploy-render.md`](docs/deploy-render.md). Render free tier'da 15 dakika inaktivite sonrası uyur; ilk istek 30-60 saniye sürebilir.
+
+🟢 **https://rebot-api.onrender.com** — Swagger UI: [/docs](https://rebot-api.onrender.com/docs)
+
+```bash
+curl https://rebot-api.onrender.com/health
+curl "https://rebot-api.onrender.com/v1/factors?region=TR"
+curl https://rebot-api.onrender.com/v1/factors/electricity.tr.grid_average
+```
+
+> ⚠️ Render free tier — 15 dakika inaktiviteden sonra uyur. **İlk istek 30-60 saniye** sürebilir (cold start), sonraki istekler hızlı. Deploy adımları: [`docs/deploy-render.md`](docs/deploy-render.md).
 
 ### Lisans
 - **Kod**: [Apache 2.0](LICENSE)
@@ -83,6 +92,7 @@ See **Hızlı başlangıç** above — same commands.
 ## Yol haritası / Roadmap
 
 - [x] Repo scaffold, FastAPI iskelet, `/v1/factors`
+- [x] Canlı demo (Render)
 - [ ] `parser/waste.py` — atık taşıma faturası (DEFRA referans)
 - [ ] `parser/electricity.py` — EPDK formatlı elektrik faturası
 - [ ] `parser/water.py` — İSKİ/İZSU/ASKİ örnekleri
