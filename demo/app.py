@@ -188,9 +188,10 @@ with gr.Blocks(title="REBOT API Demo — KOBİ ESG Doğrulama") as app:
     gr.Markdown(
         """
         ---
-        **Proje:** [github.com/memirutku/rebot-api](https://github.com/memirutku/rebot-api)
+        🌱 [**Landing**](https://memirutku.github.io/rebot-api/)
+        &nbsp;•&nbsp; 📘 [**Swagger UI**](https://rebot-api.onrender.com/docs)
+        &nbsp;•&nbsp; 💻 [**GitHub**](https://github.com/memirutku/rebot-api)
         &nbsp;•&nbsp; **Lisans:** Apache 2.0 (kod) + CC BY-SA 4.0 (data)
-        &nbsp;•&nbsp; **Swagger UI:** [/docs](https://rebot-api.onrender.com/docs)
         """
     )
 
@@ -198,6 +199,6 @@ with gr.Blocks(title="REBOT API Demo — KOBİ ESG Doğrulama") as app:
 if __name__ == "__main__":
     app.launch(
         server_name="0.0.0.0",
-        server_port=7860,
+        server_port=int(os.environ.get("PORT", 7860)),
         theme=gr.themes.Soft(primary_hue="green"),
     )

@@ -10,3 +10,17 @@ services:
         value: "3.12"
     healthCheckPath: /health
     autoDeploy: true
+
+  - type: web
+    name: rebot-api-demo
+    runtime: python
+    plan: free
+    rootDir: demo
+    buildCommand: pip install -r requirements.txt
+    startCommand: python app.py
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12"
+      - key: REBOT_API_URL
+        value: https://rebot-api.onrender.com
+    autoDeploy: true

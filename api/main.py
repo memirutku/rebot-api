@@ -167,13 +167,33 @@ SWAGGER_HTML = """<!doctype html>
   .rebot-langbar a.active {{ background: #15803d; color: #fff; }}
   .rebot-langbar a:not(.active):hover {{ background: #dcfce7; }}
   .rebot-langbar img {{ width: 18px; height: 12px; border-radius: 2px; }}
+  .rebot-navbar {{
+    position: fixed; top: 12px; left: 16px; z-index: 1000;
+    display: inline-flex; background: #fff;
+    border: 2px solid #15803d; border-radius: 999px;
+    padding: 3px; box-shadow: 0 2px 6px rgba(21,128,61,0.18);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif;
+  }}
+  .rebot-navbar a {{
+    text-decoration: none; color: #15803d;
+    padding: 6px 12px; font-size: 13px; font-weight: 700;
+    border-radius: 999px; display: inline-flex; align-items: center; gap: 4px;
+  }}
+  .rebot-navbar a:hover {{ background: #dcfce7; }}
   @media (max-width: 720px) {{
     .rebot-langbar {{ top: 8px; right: 8px; padding: 2px; }}
     .rebot-langbar a {{ padding: 4px 10px; font-size: 12px; }}
+    .rebot-navbar {{ top: 50px; left: 8px; padding: 2px; }}
+    .rebot-navbar a {{ padding: 4px 8px; font-size: 11px; }}
   }}
 </style>
 </head>
 <body>
+<nav class="rebot-navbar" aria-label="REBOT navigation">
+  <a href="https://memirutku.github.io/rebot-api/">🌱 Landing</a>
+  <a href="https://rebot-api-demo.onrender.com" target="_blank" rel="noopener">🎛️ Demo</a>
+  <a href="https://github.com/memirutku/rebot-api" target="_blank" rel="noopener">GitHub</a>
+</nav>
 <nav class="rebot-langbar" aria-label="Language">
   <a href="/docs?lang=tr" class="{tr_class}" hreflang="tr">
     <img src="https://memirutku.github.io/rebot-api/flag-tr.svg" alt="" aria-hidden="true">TR
@@ -226,6 +246,8 @@ def root() -> dict:
         "docs": "/docs",
         "openapi": "/openapi.json",
         "repository": "https://github.com/memirutku/rebot-api",
+        "landing": "https://memirutku.github.io/rebot-api/",
+        "demo": "https://rebot-api-demo.onrender.com",
     }
 
 

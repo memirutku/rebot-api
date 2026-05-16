@@ -9,9 +9,12 @@
 [![Status: Alpha](https://img.shields.io/badge/status-alpha-orange.svg)](#)
 [![CI](https://github.com/memirutku/rebot-api/actions/workflows/ci.yml/badge.svg)](https://github.com/memirutku/rebot-api/actions/workflows/ci.yml)
 
+**Tıkla, dene / Try it now** 👉 [🎛️ Görsel Demo](https://rebot-api-demo.onrender.com)
+
 **Canlı bağlantılar / Live links**
 
 - 🌐 Landing: <https://memirutku.github.io/rebot-api/>
+- 🎛️ Görsel demo: <https://rebot-api-demo.onrender.com>
 - 🔌 API: <https://rebot-api.onrender.com>
 - 📘 Swagger UI: <https://rebot-api.onrender.com/docs>
 - 💬 Tartışma / Discussions: <https://github.com/memirutku/rebot-api/discussions>
