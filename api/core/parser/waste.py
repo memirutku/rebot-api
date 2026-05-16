@@ -11,6 +11,7 @@ import json
 from decimal import Decimal
 from typing import Any
 
+from api.core.verifier import verify_lines
 from api.models.ingest import NormalizedWasteRecord
 from api.models.invoice import WasteInvoiceIn
 
@@ -71,6 +72,7 @@ def parse_json(invoice: WasteInvoiceIn) -> ParseResult:
 
     content_hash = _canonical_hash(invoice.model_dump(mode="json"))
     ingest_id = f"ing_{content_hash[:16]}"
+    emissions = verify_lines(invoice.lines)
 
     record = NormalizedWasteRecord(
         ingest_id=ingest_id,
@@ -84,6 +86,7 @@ def parse_json(invoice: WasteInvoiceIn) -> ParseResult:
         total_quantity_kg=total_kg,
         ewc_codes=sorted(set(ewc_codes)),
         disposal_methods=sorted(set(disposal_methods)),
+        emissions=emissions,
     )
 
     confidence = 0.7 if has_volumetric else 1.0

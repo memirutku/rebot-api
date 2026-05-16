@@ -1,21 +1,8 @@
-import json
-from functools import lru_cache
-from pathlib import Path
-
 from fastapi import APIRouter, HTTPException, Query
 
+from api.core import factors as factors_core
+
 router = APIRouter(tags=["factors"])
-
-DATA_DIR = Path(__file__).resolve().parent.parent.parent / "data" / "emission_factors"
-
-
-@lru_cache(maxsize=1)
-def _load_all() -> list[dict]:
-    bundles = []
-    for path in sorted(DATA_DIR.glob("*.json")):
-        with path.open(encoding="utf-8") as fp:
-            bundles.append(json.load(fp))
-    return bundles
 
 
 @router.get("/factors", summary="List emission factor datasets")
@@ -31,7 +18,7 @@ def list_factors(
         examples=["TR"],
     ),
 ) -> dict:
-    datasets = _load_all()
+    datasets = factors_core.all_datasets()
     if not datasets:
         raise HTTPException(503, "Emission factor catalogue not loaded")
 
@@ -55,8 +42,11 @@ def list_factors(
 
 @router.get("/factors/{factor_id}", summary="Get a single emission factor by id")
 def get_factor(factor_id: str) -> dict:
-    for ds in _load_all():
-        for f in ds["factors"]:
-            if f["id"] == factor_id:
-                return {"dataset": ds["dataset"], "factor": f, "license": "CC BY-SA 4.0"}
-    raise HTTPException(404, f"Factor '{factor_id}' not found")
+    factor = factors_core.find_by_id(factor_id)
+    if factor is None:
+        raise HTTPException(404, f"Factor '{factor_id}' not found")
+    # Find owning dataset for citation context
+    for ds in factors_core.all_datasets():
+        if factor in ds["factors"]:
+            return {"dataset": ds["dataset"], "factor": factor, "license": "CC BY-SA 4.0"}
+    return {"dataset": "unknown", "factor": factor, "license": "CC BY-SA 4.0"}

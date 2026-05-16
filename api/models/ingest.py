@@ -6,6 +6,8 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from api.core.verifier import VerifierResult
+
 
 class NormalizedWasteRecord(BaseModel):
     model_config = ConfigDict(extra="forbid")
@@ -22,6 +24,10 @@ class NormalizedWasteRecord(BaseModel):
     total_quantity_kg: Decimal = Field(ge=0)
     ewc_codes: list[str]
     disposal_methods: list[str]
+    emissions: VerifierResult | None = Field(
+        default=None,
+        description="Scope 3.5 emissions; populated by verifier at ingest time.",
+    )
     received_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
 
