@@ -1,0 +1,30 @@
+{
+  "$schema": "../../schemas/emission_factor.schema.json",
+  "dataset": "tuik_electricity_tr_2023",
+  "publisher": "TEİAŞ (Türkiye Elektrik İletim A.Ş.) / EPDK referans",
+  "license": "Public regulatory data, redistributed under CC BY-SA 4.0",
+  "source_url": "https://www.teias.gov.tr/turkiye-elektrik-uretim-iletim-istatistikleri",
+  "currency_year": 2023,
+  "note": "Turkey national grid average. Replace with site-specific factor when available. Verify against latest TEİAŞ annual statistics before production use.",
+  "factors": [
+    {
+      "id": "electricity.tr.grid_average",
+      "category": "scope_2.electricity",
+      "activity": "Turkey national grid electricity (location-based, market average)",
+      "unit": "kgCO2e/kWh",
+      "value": 0.443,
+      "ghg_scope": "2",
+      "region": "TR"
+    },
+    {
+      "id": "electricity.tr.renewables_certified",
+      "category": "scope_2.electricity",
+      "activity": "YEK-G certified renewable electricity (market-based)",
+      "unit": "kgCO2e/kWh",
+      "value": 0.0,
+      "ghg_scope": "2",
+      "region": "TR",
+      "note": "Requires valid YEK-G certificate evidence"
+    }
+  ]
+}

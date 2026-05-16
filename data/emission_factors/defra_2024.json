@@ -1,0 +1,75 @@
+{
+  "$schema": "../../schemas/emission_factor.schema.json",
+  "dataset": "defra_2024",
+  "publisher": "UK Department for Energy Security and Net Zero (DESNZ, formerly BEIS)",
+  "license": "Open Government Licence v3.0 / redistributed under CC BY-SA 4.0",
+  "source_url": "https://www.gov.uk/government/collections/government-conversion-factors-for-company-reporting",
+  "currency_year": 2024,
+  "note": "Subset for MVP scoping. PRs welcome to expand coverage.",
+  "factors": [
+    {
+      "id": "waste.mixed_commercial.landfill",
+      "category": "scope_3.waste",
+      "activity": "Mixed commercial and industrial waste sent to landfill",
+      "unit": "kgCO2e/tonne",
+      "value": 580.0,
+      "ghg_scope": "3.5"
+    },
+    {
+      "id": "waste.mixed_commercial.recycling",
+      "category": "scope_3.waste",
+      "activity": "Mixed recyclable waste sent to recycling",
+      "unit": "kgCO2e/tonne",
+      "value": 21.3,
+      "ghg_scope": "3.5"
+    },
+    {
+      "id": "waste.organic.composting",
+      "category": "scope_3.waste",
+      "activity": "Organic waste composted",
+      "unit": "kgCO2e/tonne",
+      "value": 8.9,
+      "ghg_scope": "3.5"
+    },
+    {
+      "id": "waste.hazardous.incineration",
+      "category": "scope_3.waste",
+      "activity": "Hazardous / clinical waste incinerated with energy recovery",
+      "unit": "kgCO2e/tonne",
+      "value": 21.4,
+      "ghg_scope": "3.5"
+    },
+    {
+      "id": "fuel.diesel.combustion",
+      "category": "scope_1.mobile_combustion",
+      "activity": "Diesel road fuel combustion",
+      "unit": "kgCO2e/litre",
+      "value": 2.51,
+      "ghg_scope": "1"
+    },
+    {
+      "id": "fuel.petrol.combustion",
+      "category": "scope_1.mobile_combustion",
+      "activity": "Petrol road fuel combustion",
+      "unit": "kgCO2e/litre",
+      "value": 2.18,
+      "ghg_scope": "1"
+    },
+    {
+      "id": "water.supply",
+      "category": "scope_3.water",
+      "activity": "Mains water supply",
+      "unit": "kgCO2e/m3",
+      "value": 0.149,
+      "ghg_scope": "3.4"
+    },
+    {
+      "id": "water.wastewater_treatment",
+      "category": "scope_3.water",
+      "activity": "Wastewater treatment",
+      "unit": "kgCO2e/m3",
+      "value": 0.272,
+      "ghg_scope": "3.4"
+    }
+  ]
+}

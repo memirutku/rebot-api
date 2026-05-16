@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: rebot-api
+    runtime: python
+    plan: free
+    pythonVersion: "3.12"
+    buildCommand: pip install -e .
+    startCommand: uvicorn api.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12"
+    healthCheckPath: /health
+    autoDeploy: true
