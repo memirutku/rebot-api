@@ -39,7 +39,7 @@ def _matches_period(record: NormalizedWasteRecord, year: int, quarter: int | Non
         "id and returns a BDDK YVO Ek-1 aligned ESG bundle (currently Objective 4 — "
         "Transition to circular economy). The response includes a detached Ed25519 "
         "signature over the canonical JSON of `bundle`. Verify with the public key "
-        "from `/v1/signing/pubkey`. Period accepts year-only ('2025') or "
+        "from `/v1/signing/public-key`. Period accepts year-only ('2025') or "
         "year-quarter ('2025-Q2'). Returns 404 if no records exist for the tax id."
     ),
 )
@@ -63,7 +63,7 @@ def get_esg_bundle(
     if not all_for_customer:
         raise HTTPException(
             404,
-            f"No ingested records for tax_id '{tax_id}'. POST invoices to /v1/ingest first.",
+            f"No invoices for tax_id '{tax_id}'. POST invoices to /v1/invoices first.",
         )
 
     filtered = [r for r in all_for_customer if _matches_period(r, year, quarter)]

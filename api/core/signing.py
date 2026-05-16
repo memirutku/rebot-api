@@ -5,7 +5,7 @@ Signing key sources, in order of preference:
 2. Auto-generated ephemeral key on first use (warning logged). Lost on
    process restart — fine for the public demo, never use this in production.
 
-Public verification key is always retrievable via ``/v1/signing/pubkey``.
+Public verification key is always retrievable via ``/v1/signing/public-key``.
 """
 
 from __future__ import annotations
@@ -119,7 +119,7 @@ def verify_bundle(bundle_dict: dict, signature_b64: str, verify_key_b64: str) ->
 
 
 def public_key_info() -> dict:
-    """Public key, fingerprint, algorithm — for /v1/signing/pubkey."""
+    """Public key, fingerprint, algorithm — for /v1/signing/public-key."""
     key = _load_or_generate_key()
     vk_bytes = bytes(key.verify_key)
     return {

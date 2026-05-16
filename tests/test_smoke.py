@@ -26,7 +26,7 @@ def test_openapi_served():
 
 
 def test_factors_list_returns_datasets():
-    r = client.get("/v1/factors")
+    r = client.get("/v1/emission-factors")
     assert r.status_code == 200
     body = r.json()
     assert body["license"] == "CC BY-SA 4.0"
@@ -35,7 +35,7 @@ def test_factors_list_returns_datasets():
 
 
 def test_factors_filter_by_scope():
-    r = client.get("/v1/factors?scope=2")
+    r = client.get("/v1/emission-factors?scope=2")
     assert r.status_code == 200
     body = r.json()
     for ds in body["datasets"]:
@@ -44,7 +44,7 @@ def test_factors_filter_by_scope():
 
 
 def test_factors_filter_by_region_tr():
-    r = client.get("/v1/factors?region=TR")
+    r = client.get("/v1/emission-factors?region=TR")
     assert r.status_code == 200
     body = r.json()
     for ds in body["datasets"]:
@@ -53,12 +53,12 @@ def test_factors_filter_by_region_tr():
 
 
 def test_factor_by_id_found():
-    r = client.get("/v1/factors/electricity.tr.grid_average")
+    r = client.get("/v1/emission-factors/electricity.tr.grid_average")
     assert r.status_code == 200
     body = r.json()
     assert body["factor"]["value"] == 0.443
 
 
 def test_factor_by_id_not_found():
-    r = client.get("/v1/factors/does.not.exist")
+    r = client.get("/v1/emission-factors/does.not.exist")
     assert r.status_code == 404

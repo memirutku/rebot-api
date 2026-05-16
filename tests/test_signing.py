@@ -27,7 +27,7 @@ client = TestClient(app)
 
 
 def test_pubkey_endpoint():
-    r = client.get("/v1/signing/pubkey")
+    r = client.get("/v1/signing/public-key")
     assert r.status_code == 200
     body = r.json()
     assert body["algorithm"] == "Ed25519"
@@ -76,7 +76,7 @@ def _ingest_one():
             }
         ],
     }
-    r = client.post("/v1/ingest", json=payload)
+    r = client.post("/v1/invoices", json=payload)
     assert r.status_code == 201
 
 
@@ -86,7 +86,7 @@ def test_esg_endpoint_returns_verifiable_signature():
     assert r.status_code == 200, r.text
     body = r.json()
     assert body["signature"]["algorithm"] == "Ed25519"
-    pub = client.get("/v1/signing/pubkey").json()
+    pub = client.get("/v1/signing/public-key").json()
     assert signing_core.verify_bundle(
         body["bundle"],
         body["signature"]["value_b64"],
@@ -102,7 +102,7 @@ def test_esg_signature_changes_when_data_changes():
     # so signature over the bundle alone must match — that's exactly what we verify.
     # Re-check by recomputing locally:
     body = client.get("/v1/esg/9876543210?period=2025-Q2").json()
-    pub = client.get("/v1/signing/pubkey").json()
+    pub = client.get("/v1/signing/public-key").json()
     assert signing_core.verify_bundle(
         body["bundle"], body["signature"]["value_b64"], pub["verify_key_b64"]
     )

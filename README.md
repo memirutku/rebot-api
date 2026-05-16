@@ -26,7 +26,7 @@ BDDK'nın Nisan 2025'te yayımladığı **Yeşil Varlık Oranı (YVO) Tebliği**
 ### Çözüm
 REBOT API, KOBİ faturalarını alır, **GHG Protocol Scope 1/2/3** hesabını yapar, **BDDK YVO Ek-1** hedeflerine eşler, sonucu imzalı bir bundle olarak bankalara sunar. Üç katman halinde:
 
-1. **Giriş** — `POST /v1/ingest`: PDF/CSV/JSON fatura kabul, normalize
+1. **Giriş** — `POST /v1/invoices`: PDF/CSV/JSON fatura kabul, normalize
 2. **Doğrulama** — Açık emisyon faktör kataloğu (DEFRA + TÜİK)
 3. **Çıkış** — `GET /v1/esg/{tax_id}`: BDDK YVO + EFRAG VSME XBRL uyumlu bundle, **Ed25519 imzalı**
 
@@ -51,14 +51,14 @@ uvicorn api.main:app --reload
 URL=https://rebot-api.onrender.com
 
 # 1. Atık taşıma faturası gönder
-curl -X POST $URL/v1/ingest -H "Content-Type: application/json" \
+curl -X POST $URL/v1/invoices -H "Content-Type: application/json" \
      -d @examples/requests/waste_ingest.json
 
 # 2. KOBİ bazında dönemsel ESG bundle al (imzalı)
 curl "$URL/v1/esg/9876543210?period=2025-Q2" | jq .
 
 # 3. İmza doğrulama için public key
-curl $URL/v1/signing/pubkey | jq .
+curl $URL/v1/signing/public-key | jq .
 ```
 
 İmza doğrulama (Python):
@@ -69,7 +69,7 @@ from nacl.signing import VerifyKey
 
 URL = "https://rebot-api.onrender.com"
 resp = requests.get(f"{URL}/v1/esg/9876543210?period=2025-Q2").json()
-pub  = requests.get(f"{URL}/v1/signing/pubkey").json()
+pub  = requests.get(f"{URL}/v1/signing/public-key").json()
 
 vk = VerifyKey(base64.b64decode(pub["verify_key_b64"]))
 canonical = json.dumps(resp["bundle"], sort_keys=True, separators=(",",":"),
@@ -82,9 +82,9 @@ print("✅ İmza geçerli, BDDK YVO bundle doğrulandı")
 
 ```bash
 curl $URL/health                                        # liveness
-curl "$URL/v1/factors?region=TR"                        # TR emisyon faktörleri
-curl $URL/v1/factors/electricity.tr.grid_average        # tek faktör
-curl "$URL/v1/waste-codes?chapter=20"                   # EWC kodları (chapter 20 — evsel)
+curl "$URL/v1/emission-factors?region=TR"                        # TR emisyon faktörleri
+curl $URL/v1/emission-factors/electricity.tr.grid_average        # tek faktör
+curl "$URL/v1/ewc-codes?chapter=20"                   # EWC kodları (chapter 20 — evsel)
 ```
 
 Örnek imzalı bundle: [`examples/responses/esg_bundle_signed.json`](examples/responses/esg_bundle_signed.json)
@@ -122,7 +122,7 @@ Turkey's banking regulator (BDDK) issued the **Green Asset Ratio (YVO) Regulatio
 ### Solution
 REBOT API ingests SME utility invoices, runs **GHG Protocol Scope 1/2/3** accounting, maps to **BDDK YVO Annex 1** objectives, and emits a signed bundle to banks. Three layers:
 
-1. **Ingest** — `POST /v1/ingest`: accept PDF/CSV/JSON invoices, normalize
+1. **Ingest** — `POST /v1/invoices`: accept PDF/CSV/JSON invoices, normalize
 2. **Verify** — Open emission factor catalogue (DEFRA + TÜİK Turkey-grid)
 3. **Emit** — `GET /v1/esg/{tax_id}`: BDDK YVO + EFRAG VSME XBRL compatible bundle, **Ed25519 signed**
 
@@ -147,14 +147,14 @@ uvicorn api.main:app --reload
 URL=https://rebot-api.onrender.com
 
 # 1. Submit a waste-transport invoice
-curl -X POST $URL/v1/ingest -H "Content-Type: application/json" \
+curl -X POST $URL/v1/invoices -H "Content-Type: application/json" \
      -d @examples/requests/waste_ingest.json
 
 # 2. Fetch the signed ESG bundle for the SME and period
 curl "$URL/v1/esg/9876543210?period=2025-Q2" | jq .
 
 # 3. Get the public key to verify the signature
-curl $URL/v1/signing/pubkey | jq .
+curl $URL/v1/signing/public-key | jq .
 ```
 
 Verify the signature (Python):
@@ -165,7 +165,7 @@ from nacl.signing import VerifyKey
 
 URL = "https://rebot-api.onrender.com"
 resp = requests.get(f"{URL}/v1/esg/9876543210?period=2025-Q2").json()
-pub  = requests.get(f"{URL}/v1/signing/pubkey").json()
+pub  = requests.get(f"{URL}/v1/signing/public-key").json()
 
 vk = VerifyKey(base64.b64decode(pub["verify_key_b64"]))
 canonical = json.dumps(resp["bundle"], sort_keys=True, separators=(",",":"),
@@ -178,9 +178,9 @@ print("✅ Signature valid — BDDK YVO bundle verified")
 
 ```bash
 curl $URL/health                                        # liveness
-curl "$URL/v1/factors?region=TR"                        # TR emission factors
-curl $URL/v1/factors/electricity.tr.grid_average        # single factor
-curl "$URL/v1/waste-codes?chapter=20"                   # EWC waste codes (chapter 20 — municipal)
+curl "$URL/v1/emission-factors?region=TR"                        # TR emission factors
+curl $URL/v1/emission-factors/electricity.tr.grid_average        # single factor
+curl "$URL/v1/ewc-codes?chapter=20"                   # EWC waste codes (chapter 20 — municipal)
 ```
 
 Sample signed bundle: [`examples/responses/esg_bundle_signed.json`](examples/responses/esg_bundle_signed.json)
@@ -222,7 +222,7 @@ Deploy to HF Spaces: [`docs/deploy-hf-spaces.md`](docs/deploy-hf-spaces.md).
                   │ (1) atık taşıma fatura JSON   waste-transport invoice JSON
                   ▼
    ┌─────────────────────────────────────────┐
-   │  POST /v1/ingest                        │
+   │  POST /v1/invoices                        │
    │   • EWC kodu + birim doğrulaması        │
    │   • Pydantic ile şema validation        │
    │   • SHA-256 dedupe                      │
@@ -237,5 +237,5 @@ Deploy to HF Spaces: [`docs/deploy-hf-spaces.md`](docs/deploy-hf-spaces.md).
    └────────────────┬────────────────────────┘
                     ▼
               Banka / Regulator
-              (verifies via /v1/signing/pubkey)
+              (verifies via /v1/signing/public-key)
 ```

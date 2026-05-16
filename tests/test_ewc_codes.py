@@ -7,7 +7,7 @@ client = TestClient(app)
 
 
 def test_list_default_returns_full_catalogue():
-    r = client.get("/v1/waste-codes")
+    r = client.get("/v1/ewc-codes")
     assert r.status_code == 200
     body = r.json()
     assert body["license"] == "CC BY-SA 4.0"
@@ -17,7 +17,7 @@ def test_list_default_returns_full_catalogue():
 
 
 def test_filter_by_chapter():
-    r = client.get("/v1/waste-codes?chapter=20")
+    r = client.get("/v1/ewc-codes?chapter=20")
     assert r.status_code == 200
     body = r.json()
     for c in body["codes"]:
@@ -25,14 +25,14 @@ def test_filter_by_chapter():
 
 
 def test_filter_hazardous_true_only():
-    r = client.get("/v1/waste-codes?hazardous=true")
+    r = client.get("/v1/ewc-codes?hazardous=true")
     assert r.status_code == 200
     for c in r.json()["codes"]:
         assert c["hazardous"] is True
 
 
 def test_search_finds_plastik():
-    r = client.get("/v1/waste-codes?q=plastik")
+    r = client.get("/v1/ewc-codes?q=plastik")
     assert r.status_code == 200
     body = r.json()
     assert body["returned"] >= 1
@@ -40,35 +40,35 @@ def test_search_finds_plastik():
 
 
 def test_search_finds_in_english_too():
-    r = client.get("/v1/waste-codes?q=concrete")
+    r = client.get("/v1/ewc-codes?q=concrete")
     assert r.status_code == 200
     assert r.json()["returned"] >= 1
 
 
 def test_invalid_chapter_pattern_422():
-    r = client.get("/v1/waste-codes?chapter=ABC")
+    r = client.get("/v1/ewc-codes?chapter=ABC")
     assert r.status_code == 422
 
 
 def test_lookup_spaced():
-    r = client.get("/v1/waste-codes/20 03 01")
+    r = client.get("/v1/ewc-codes/20 03 01")
     assert r.status_code == 200
     assert r.json()["code"]["description_tr"].startswith("Karışık belediye")
 
 
 def test_lookup_compact():
-    r = client.get("/v1/waste-codes/200301")
+    r = client.get("/v1/ewc-codes/200301")
     assert r.status_code == 200
     assert r.json()["code"]["code"] == "20 03 01"
 
 
 def test_lookup_unknown_404():
-    r = client.get("/v1/waste-codes/999999")
+    r = client.get("/v1/ewc-codes/999999")
     assert r.status_code == 404
 
 
 def test_lookup_invalid_format_404():
-    r = client.get("/v1/waste-codes/abc")
+    r = client.get("/v1/ewc-codes/abc")
     assert r.status_code == 404
 
 

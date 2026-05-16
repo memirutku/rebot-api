@@ -62,7 +62,7 @@ def process(invoice_json: str) -> tuple[str, str, str, str, str]:
 
     # 1. Ingest
     try:
-        r = requests.post(f"{API_URL}/v1/ingest", json=payload, timeout=90)
+        r = requests.post(f"{API_URL}/v1/invoices", json=payload, timeout=90)
     except requests.RequestException as e:
         return f"❌ API erişilemedi: {e}", "", "", "", ""
 
@@ -111,8 +111,8 @@ def process(invoice_json: str) -> tuple[str, str, str, str, str]:
         f"**Methodology:** _{obj['methodology']}_"
     )
 
-    # 3. Signature verify (locally, against /v1/signing/pubkey)
-    pub = requests.get(f"{API_URL}/v1/signing/pubkey", timeout=30).json()
+    # 3. Signature verify (locally, against /v1/signing/public-key)
+    pub = requests.get(f"{API_URL}/v1/signing/public-key", timeout=30).json()
     ok, msg = _verify_signature(bundle, sig["value_b64"], pub["verify_key_b64"])
     sig_summary = (
         f"**Algoritma:** {sig['algorithm']}  \n"

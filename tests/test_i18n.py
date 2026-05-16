@@ -41,7 +41,7 @@ def test_tr_translates_pydantic_titles():
 
 def test_tr_translates_query_parameter_descriptions():
     spec = client.get("/openapi.tr.json").json()
-    factors = spec["paths"]["/v1/factors"]["get"]
+    factors = spec["paths"]["/v1/emission-factors"]["get"]
     region_param = next(p for p in factors["parameters"] if p["name"] == "region")
     assert "bölge" in region_param["description"].lower()
 
@@ -76,10 +76,10 @@ def test_tr_has_no_residual_english_in_descriptions():
             for k, v in obj.items():
                 if k == "description" and isinstance(v, str):
                     lc = v.lower()
-                    if any(f" {w} " in f" {lc} " for w in english_giveaways):
-                        # tolerate code blocks (`...`) and proper nouns
-                        if not any(t in v for t in ("``", "Apache", "CC BY-SA", "REBOT")):
-                            yield v
+                    has_english = any(f" {w} " in f" {lc} " for w in english_giveaways)
+                    has_safe = any(t in v for t in ("``", "Apache", "CC BY-SA", "REBOT"))
+                    if has_english and not has_safe:
+                        yield v
                 else:
                     yield from walk(v)
         elif isinstance(obj, list):

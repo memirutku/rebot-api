@@ -17,8 +17,8 @@ EN_TO_TR: dict[str, str] = {
     # ── Path operation summaries ──────────────────────────────────────
     "Service banner": "Servis bilgisi",
     "Liveness probe": "Sağlık kontrolü",
-    "Ingest a structured invoice payload": "Yapılandırılmış fatura kaydı al",
-    "Retrieve a previously ingested record": "Önceden alınmış kaydı getir",
+    "Submit a structured invoice payload": "Yapılandırılmış fatura kaydı gönder",
+    "Retrieve a previously submitted invoice": "Önceden gönderilmiş faturayı getir",
     "BDDK YVO bundle (Ed25519 signed) for an SME's reporting period": (
         "KOBİ raporlama dönemi için BDDK YVO bundle (Ed25519 imzalı)"
     ),
@@ -46,12 +46,12 @@ EN_TO_TR: dict[str, str] = {
     "id and returns a BDDK YVO Ek-1 aligned ESG bundle (currently Objective 4 — "
     "Transition to circular economy). The response includes a detached Ed25519 "
     "signature over the canonical JSON of `bundle`. Verify with the public key "
-    "from `/v1/signing/pubkey`. Period accepts year-only ('2025') or "
+    "from `/v1/signing/public-key`. Period accepts year-only ('2025') or "
     "year-quarter ('2025-Q2'). Returns 404 if no records exist for the tax id.": (
         "Verilen Türk vergi kimliği için daha önce alınmış tüm atık faturalarını "
         "toplar ve BDDK YVO Ek-1 ile uyumlu ESG bundle döner (şu an Hedef 4 — "
         "Döngüsel ekonomiye geçiş). Yanıt, `bundle` alanının kanonik JSON'ı "
-        "üzerinde ayrılmış (detached) Ed25519 imzasını içerir. `/v1/signing/pubkey` "
+        "üzerinde ayrılmış (detached) Ed25519 imzasını içerir. `/v1/signing/public-key` "
         "ile dönen public key ile doğrulayın. Dönem 'YYYY' veya 'YYYY-Q[1-4]' "
         "biçiminde kabul edilir. Vergi kimliği için kayıt yoksa 404 döner."
     ),

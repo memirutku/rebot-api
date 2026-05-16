@@ -37,7 +37,7 @@ SAMPLE = {
 
 
 def test_post_ingest_returns_normalized_record():
-    r = client.post("/v1/ingest", json=SAMPLE)
+    r = client.post("/v1/invoices", json=SAMPLE)
     assert r.status_code == 201, r.text
     body = r.json()
     assert body["invoice_type"] == "waste"
@@ -50,33 +50,33 @@ def test_post_ingest_returns_normalized_record():
 
 
 def test_duplicate_post_flagged_and_idempotent():
-    first = client.post("/v1/ingest", json=SAMPLE).json()
-    second = client.post("/v1/ingest", json=SAMPLE).json()
+    first = client.post("/v1/invoices", json=SAMPLE).json()
+    second = client.post("/v1/invoices", json=SAMPLE).json()
     assert first["ingest_id"] == second["ingest_id"]
     assert first["content_hash"] == second["content_hash"]
     assert second["duplicate"] is True
 
 
 def test_get_ingest_by_id():
-    posted = client.post("/v1/ingest", json=SAMPLE).json()
+    posted = client.post("/v1/invoices", json=SAMPLE).json()
     ingest_id = posted["ingest_id"]
-    r = client.get(f"/v1/ingest/{ingest_id}")
+    r = client.get(f"/v1/invoices/{ingest_id}")
     assert r.status_code == 200
     assert r.json()["ingest_id"] == ingest_id
 
 
 def test_get_ingest_404_for_unknown():
-    r = client.get("/v1/ingest/ing_nonexistent")
+    r = client.get("/v1/invoices/ing_nonexistent")
     assert r.status_code == 404
 
 
 def test_ingest_rejects_missing_lines():
     bad = {**SAMPLE, "lines": []}
-    r = client.post("/v1/ingest", json=bad)
+    r = client.post("/v1/invoices", json=bad)
     assert r.status_code == 422
 
 
 def test_ingest_rejects_bad_tax_id():
     bad = {**SAMPLE, "customer_tax_id": "abc"}
-    r = client.post("/v1/ingest", json=bad)
+    r = client.post("/v1/invoices", json=bad)
     assert r.status_code == 422

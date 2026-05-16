@@ -2,10 +2,10 @@ from fastapi import APIRouter, HTTPException, Query
 
 from api.core import factors as factors_core
 
-router = APIRouter(tags=["factors"])
+router = APIRouter(tags=["emission-factors"])
 
 
-@router.get("/factors", summary="List emission factor datasets")
+@router.get("/emission-factors", summary="List emission factor datasets")
 def list_factors(
     scope: str | None = Query(
         default=None,
@@ -40,7 +40,7 @@ def list_factors(
     }
 
 
-@router.get("/factors/{factor_id}", summary="Get a single emission factor by id")
+@router.get("/emission-factors/{factor_id}", summary="Get a single emission factor by id")
 def get_factor(factor_id: str) -> dict:
     factor = factors_core.find_by_id(factor_id)
     if factor is None:

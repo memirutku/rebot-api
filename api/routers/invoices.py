@@ -5,14 +5,14 @@ from api.models.ingest import IngestResponse, NormalizedWasteRecord
 from api.models.invoice import WasteInvoiceIn
 from api.storage import store
 
-router = APIRouter(tags=["ingest"])
+router = APIRouter(tags=["invoices"])
 
 
 @router.post(
-    "/ingest",
+    "/invoices",
     response_model=IngestResponse,
     status_code=status.HTTP_201_CREATED,
-    summary="Ingest a structured invoice payload",
+    summary="Submit a structured invoice payload",
     description=(
         "Accepts a structured JSON invoice (currently `invoice_type=waste`). "
         "Returns a normalized record with a stable `ingest_id` derived from the "
@@ -20,7 +20,7 @@ router = APIRouter(tags=["ingest"])
         "the same id and is flagged as `duplicate=true`."
     ),
 )
-def ingest(invoice: WasteInvoiceIn) -> IngestResponse:
+def create_invoice(invoice: WasteInvoiceIn) -> IngestResponse:
     if invoice.invoice_type != "waste":
         raise HTTPException(
             status_code=400,
@@ -47,12 +47,12 @@ def ingest(invoice: WasteInvoiceIn) -> IngestResponse:
 
 
 @router.get(
-    "/ingest/{ingest_id}",
+    "/invoices/{ingest_id}",
     response_model=NormalizedWasteRecord,
-    summary="Retrieve a previously ingested record",
+    summary="Retrieve a previously submitted invoice",
 )
-def get_ingest(ingest_id: str) -> NormalizedWasteRecord:
+def get_invoice(ingest_id: str) -> NormalizedWasteRecord:
     record = store.get(ingest_id)
     if record is None:
-        raise HTTPException(404, f"ingest_id '{ingest_id}' not found")
+        raise HTTPException(404, f"invoice '{ingest_id}' not found")
     return record

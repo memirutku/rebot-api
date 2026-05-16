@@ -97,6 +97,6 @@ def parse_pdf(_file_bytes: bytes) -> ParseResult:
     """Reserved for PDF/OCR pathway. Implementation deferred until anonymized
     sample invoices from licensed Turkish waste carriers are available."""
     raise NotImplementedError(
-        "PDF parsing not yet implemented. Send structured JSON to POST /v1/ingest. "
+        "PDF parsing not yet implemented. Send structured JSON to POST /v1/invoices. "
         "See https://github.com/memirutku/rebot-api/issues for progress."
     )

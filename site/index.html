@@ -269,7 +269,7 @@
       <div class="box" data-lang="en"><strong>3. Emit</strong><br/>BDDK YVO + Ed25519 signature</div>
     </div>
 <pre data-lang="tr"><code># Tek satırlık demo
-curl -X POST https://rebot-api.onrender.com/v1/ingest \
+curl -X POST https://rebot-api.onrender.com/v1/invoices \
      -H "Content-Type: application/json" \
      -d @examples/requests/waste_ingest.json
 
@@ -277,7 +277,7 @@ curl "https://rebot-api.onrender.com/v1/esg/9876543210?period=2025-Q2"
 # → { "bundle": {...}, "signature": { "algorithm": "Ed25519", ... } }
 </code></pre>
 <pre data-lang="en"><code># One-liner demo
-curl -X POST https://rebot-api.onrender.com/v1/ingest \
+curl -X POST https://rebot-api.onrender.com/v1/invoices \
      -H "Content-Type: application/json" \
      -d @examples/requests/waste_ingest.json
 

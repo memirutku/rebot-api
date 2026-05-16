@@ -32,7 +32,7 @@
 URL'i tarayıcıda aç:
 - `https://YOUR-URL.onrender.com/` → JSON service banner
 - `https://YOUR-URL.onrender.com/docs` → Swagger UI
-- `https://YOUR-URL.onrender.com/v1/factors` → emisyon faktör kataloğu
+- `https://YOUR-URL.onrender.com/v1/emission-factors` → emisyon faktör kataloğu
 - `https://YOUR-URL.onrender.com/health` → `{"status":"ok"}`
 
 ## 4. README'i güncelle

@@ -6,7 +6,7 @@ router = APIRouter(tags=["signing"])
 
 
 @router.get(
-    "/signing/pubkey",
+    "/signing/public-key",
     summary="Get the Ed25519 verify key used to sign ESG bundles",
     description=(
         "Returns the public key in base64 along with a SHA-256 fingerprint. "

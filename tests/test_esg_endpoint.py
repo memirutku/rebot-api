@@ -40,7 +40,7 @@ def _post(
             }
         ],
     }
-    r = client.post("/v1/ingest", json=payload)
+    r = client.post("/v1/invoices", json=payload)
     assert r.status_code == 201, r.text
     return r.json()
 

@@ -2,11 +2,11 @@ from fastapi import APIRouter, HTTPException, Query
 
 from api.core import waste_codes as catalogue
 
-router = APIRouter(tags=["waste-codes"])
+router = APIRouter(tags=["ewc-codes"])
 
 
 @router.get(
-    "/waste-codes",
+    "/ewc-codes",
     summary="List EWC waste codes (Turkish + English)",
     description=(
         "European Waste Catalogue (EU 2014/955) Turkish-language subset focused on "
@@ -62,7 +62,7 @@ def list_codes(
 
 
 @router.get(
-    "/waste-codes/{code}",
+    "/ewc-codes/{code}",
     summary="Look up a single EWC code",
     description="Accepts the spaced form '20 03 01' or the compact form '200301'.",
 )

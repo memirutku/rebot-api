@@ -7,7 +7,7 @@ from fastapi.responses import HTMLResponse, JSONResponse
 
 from api import __version__
 from api.i18n import translate as tr
-from api.routers import esg, factors, ingest, signing, waste_codes
+from api.routers import emission_factors, esg, ewc_codes, invoices, signing
 
 # Two-language metadata. The OpenAPI spec is generated once in Turkish (default
 # user audience), then a translated copy is served at /openapi.en.json. Path
@@ -25,11 +25,11 @@ META_TR = {
     ),
     "tags": {
         "meta": "Sağlık ve sürüm",
-        "ingest": "Fatura veri kabulü (normalize etme)",
+        "invoices": "Fatura veri kabulü (normalize etme)",
         "esg": "KOBİ için BDDK YVO uyumlu ESG bundle",
         "signing": "İmzalı bundle'ları doğrulamak için public key",
-        "factors": "Açık emisyon faktör kataloğu (CC BY-SA 4.0)",
-        "waste-codes": "EWC (Avrupa Atık Kataloğu) Türkçe arama",
+        "emission-factors": "Açık emisyon faktör kataloğu (CC BY-SA 4.0)",
+        "ewc-codes": "EWC (Avrupa Atık Kataloğu) Türkçe arama",
     },
 }
 
@@ -43,11 +43,11 @@ META_EN = {
     ),
     "tags": {
         "meta": "Health and version",
-        "ingest": "Submit utility invoices for normalization",
+        "invoices": "Submit utility invoices for normalization",
         "esg": "BDDK YVO compliant ESG bundle for an SME",
         "signing": "Public key for verifying signed bundles",
-        "factors": "Open emission factor catalogue (CC BY-SA 4.0)",
-        "waste-codes": "EWC (European Waste Catalogue) Turkish lookup",
+        "emission-factors": "Open emission factor catalogue (CC BY-SA 4.0)",
+        "ewc-codes": "EWC (European Waste Catalogue) Turkish lookup",
     },
 }
 
@@ -75,11 +75,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(ingest.router, prefix="/v1")
+app.include_router(invoices.router, prefix="/v1")
 app.include_router(esg.router, prefix="/v1")
 app.include_router(signing.router, prefix="/v1")
-app.include_router(factors.router, prefix="/v1")
-app.include_router(waste_codes.router, prefix="/v1")
+app.include_router(emission_factors.router, prefix="/v1")
+app.include_router(ewc_codes.router, prefix="/v1")
 
 
 TRANSLATABLE_KEYS = {"summary", "description", "title"}
