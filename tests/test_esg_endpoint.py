@@ -54,27 +54,27 @@ def test_esg_returns_bundle_after_ingest():
     _post("R3", qty="1")
     r = client.get("/v1/esg/9876543210?period=2025-Q2")
     assert r.status_code == 200, r.text
-    body = r.json()
-    assert body["tax_id"] == "9876543210"
-    assert body["period"] == "2025-Q2"
-    assert body["invoice_count"] == 1
-    assert Decimal(body["total_waste_tonnes"]) == Decimal("1.000")
-    assert Decimal(body["objectives"][0]["aligned_ratio"]) == Decimal("1.0000")
+    b = r.json()["bundle"]
+    assert b["tax_id"] == "9876543210"
+    assert b["period"] == "2025-Q2"
+    assert b["invoice_count"] == 1
+    assert Decimal(b["total_waste_tonnes"]) == Decimal("1.000")
+    assert Decimal(b["objectives"][0]["aligned_ratio"]) == Decimal("1.0000")
 
 
 def test_esg_multi_invoice_aggregates():
     _post("R3", qty="3", invoice_number="A")
     _post("D1", qty="1", invoice_number="B")
-    r = client.get("/v1/esg/9876543210?period=2025-Q2").json()
-    assert r["invoice_count"] == 2
-    assert Decimal(r["objectives"][0]["aligned_ratio"]) == Decimal("0.7500")
+    b = client.get("/v1/esg/9876543210?period=2025-Q2").json()["bundle"]
+    assert b["invoice_count"] == 2
+    assert Decimal(b["objectives"][0]["aligned_ratio"]) == Decimal("0.7500")
 
 
 def test_esg_filters_by_quarter():
-    _post("R3", qty="1", invoice_number="Q1", date="2025-02-01")  # Q1
-    _post("D1", qty="1", invoice_number="Q2", date="2025-04-01")  # Q2
-    q1 = client.get("/v1/esg/9876543210?period=2025-Q1").json()
-    q2 = client.get("/v1/esg/9876543210?period=2025-Q2").json()
+    _post("R3", qty="1", invoice_number="Q1", date="2025-02-01")
+    _post("D1", qty="1", invoice_number="Q2", date="2025-04-01")
+    q1 = client.get("/v1/esg/9876543210?period=2025-Q1").json()["bundle"]
+    q2 = client.get("/v1/esg/9876543210?period=2025-Q2").json()["bundle"]
     assert q1["invoice_count"] == 1
     assert Decimal(q1["objectives"][0]["aligned_ratio"]) == Decimal("1.0000")
     assert q2["invoice_count"] == 1
@@ -84,18 +84,18 @@ def test_esg_filters_by_quarter():
 def test_esg_year_only_period_returns_both_quarters():
     _post("R3", qty="1", invoice_number="A", date="2025-02-01")
     _post("R3", qty="1", invoice_number="B", date="2025-08-01")
-    r = client.get("/v1/esg/9876543210?period=2025").json()
-    assert r["invoice_count"] == 2
-    assert Decimal(r["total_waste_tonnes"]) == Decimal("2.000")
+    b = client.get("/v1/esg/9876543210?period=2025").json()["bundle"]
+    assert b["invoice_count"] == 2
+    assert Decimal(b["total_waste_tonnes"]) == Decimal("2.000")
 
 
 def test_esg_empty_period_returns_empty_bundle_not_404():
     _post("R3", qty="1", invoice_number="A", date="2025-04-01")
     r = client.get("/v1/esg/9876543210?period=2024")
     assert r.status_code == 200
-    body = r.json()
-    assert body["invoice_count"] == 0
-    assert "No ingested" in " ".join(body["notes"])
+    b = r.json()["bundle"]
+    assert b["invoice_count"] == 0
+    assert "No ingested" in " ".join(b["notes"])
 
 
 def test_esg_invalid_period_400():

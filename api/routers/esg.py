@@ -2,7 +2,8 @@ import re
 
 from fastapi import APIRouter, HTTPException, Query
 
-from api.core.bddk_mapper import YvoBundle, build_bundle
+from api.core.bddk_mapper import SignedYvoBundle, build_bundle
+from api.core.signing import sign_bundle
 from api.models.ingest import NormalizedWasteRecord
 from api.storage import store
 
@@ -31,12 +32,14 @@ def _matches_period(record: NormalizedWasteRecord, year: int, quarter: int | Non
 
 @router.get(
     "/esg/{tax_id}",
-    response_model=YvoBundle,
-    summary="BDDK YVO bundle for an SME's reporting period",
+    response_model=SignedYvoBundle,
+    summary="BDDK YVO bundle (Ed25519 signed) for an SME's reporting period",
     description=(
         "Aggregates all previously ingested waste invoices for the given Turkish tax "
         "id and returns a BDDK YVO Ek-1 aligned ESG bundle (currently Objective 4 — "
-        "Transition to circular economy). Period accepts year-only ('2025') or "
+        "Transition to circular economy). The response includes a detached Ed25519 "
+        "signature over the canonical JSON of `bundle`. Verify with the public key "
+        "from `/v1/signing/pubkey`. Period accepts year-only ('2025') or "
         "year-quarter ('2025-Q2'). Returns 404 if no records exist for the tax id."
     ),
 )
@@ -47,7 +50,7 @@ def get_esg_bundle(
         description="Reporting period: 'YYYY' or 'YYYY-Q[1-4]'",
         examples=["2025-Q2", "2025"],
     ),
-) -> YvoBundle:
+) -> SignedYvoBundle:
     if not tax_id.isdigit() or len(tax_id) not in (10, 11):
         raise HTTPException(
             400,
@@ -64,9 +67,6 @@ def get_esg_bundle(
         )
 
     filtered = [r for r in all_for_customer if _matches_period(r, year, quarter)]
-    if not filtered:
-        # Return an empty bundle rather than 404 — caller knows tax_id exists but
-        # has no data in the requested period.
-        return build_bundle(tax_id=tax_id, period=period, records=[])
-
-    return build_bundle(tax_id=tax_id, period=period, records=filtered)
+    bundle = build_bundle(tax_id=tax_id, period=period, records=filtered)
+    signature = sign_bundle(bundle.model_dump(mode="json"))
+    return SignedYvoBundle(bundle=bundle, signature=signature)

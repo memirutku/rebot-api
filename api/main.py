@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from api import __version__
-from api.routers import esg, factors, ingest
+from api.routers import esg, factors, ingest, signing
 
 app = FastAPI(
     title="REBOT API",
@@ -22,6 +22,7 @@ app = FastAPI(
         {"name": "meta", "description": "Health and version"},
         {"name": "ingest", "description": "Submit utility invoices for normalization"},
         {"name": "esg", "description": "BDDK YVO compliant ESG bundle for an SME"},
+        {"name": "signing", "description": "Public key for verifying signed bundles"},
         {"name": "factors", "description": "Open emission factor catalogue (CC BY-SA 4.0)"},
     ],
 )
@@ -35,6 +36,7 @@ app.add_middleware(
 
 app.include_router(ingest.router, prefix="/v1")
 app.include_router(esg.router, prefix="/v1")
+app.include_router(signing.router, prefix="/v1")
 app.include_router(factors.router, prefix="/v1")
 
 

@@ -16,6 +16,7 @@ from decimal import Decimal
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from api.core.signing import SignatureInfo
 from api.core.verifier import VerifierResult
 from api.models.ingest import NormalizedWasteRecord
 
@@ -152,10 +153,21 @@ def build_bundle(
     )
 
 
+class SignedYvoBundle(BaseModel):
+    """Bundle + detached Ed25519 signature. The signature covers a canonical
+    JSON serialization of the ``bundle`` field only."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    bundle: YvoBundle
+    signature: SignatureInfo
+
+
 # Helper kept for symmetry with verifier; not currently consumed elsewhere.
 __all__ = [
     "ObjectiveAlignment",
     "YvoBundle",
+    "SignedYvoBundle",
     "VerifierResult",  # re-export for typing in other modules
     "map_objective_4",
     "build_bundle",
