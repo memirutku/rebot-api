@@ -1,0 +1,26 @@
+{
+  "invoice_type": "waste",
+  "invoice_number": "DEMO-001",
+  "invoice_date": "2025-05-15",
+  "issuer_tax_id": "1234567890",
+  "issuer_name": "Yeşil Atık Taşıma A.Ş.",
+  "customer_tax_id": "1111111111",
+  "customer_name": "Yeşil KOBİ Tekstil Ltd.",
+  "lines": [
+    {
+      "ewc_code": "20 03 01",
+      "description": "Karışık ticari atık (geri dönüşüme)",
+      "quantity": "3.2",
+      "unit": "tonne",
+      "disposal_method": "R3"
+    },
+    {
+      "ewc_code": "20 02 01",
+      "description": "Organik bahçe atığı (kompostlamaya)",
+      "quantity": "450",
+      "unit": "kg",
+      "disposal_method": "R3"
+    }
+  ],
+  "total_amount_try": "5400.00"
+}

@@ -1,0 +1,19 @@
+{
+  "invoice_type": "waste",
+  "invoice_number": "DEMO-003",
+  "invoice_date": "2025-05-28",
+  "issuer_tax_id": "1234567890",
+  "issuer_name": "Standart Atık Depolama A.Ş.",
+  "customer_tax_id": "3333333333",
+  "customer_name": "Eski Yöntem KOBİ Ltd.",
+  "lines": [
+    {
+      "ewc_code": "20 03 01",
+      "description": "Karışık ticari atık (depolama sahasına)",
+      "quantity": "2.8",
+      "unit": "tonne",
+      "disposal_method": "D5"
+    }
+  ],
+  "total_amount_try": "3920.00"
+}

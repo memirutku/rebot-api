@@ -1,0 +1,26 @@
+{
+  "invoice_type": "waste",
+  "invoice_number": "DEMO-002",
+  "invoice_date": "2025-05-20",
+  "issuer_tax_id": "1234567890",
+  "issuer_name": "Genel Atık Yönetimi A.Ş.",
+  "customer_tax_id": "2222222222",
+  "customer_name": "Karma KOBİ Üretim Ltd.",
+  "lines": [
+    {
+      "ewc_code": "20 03 01",
+      "description": "Geri dönüştürülebilir karışık atık",
+      "quantity": "1.5",
+      "unit": "tonne",
+      "disposal_method": "R3"
+    },
+    {
+      "ewc_code": "20 03 01",
+      "description": "Depolanan karışık atık",
+      "quantity": "1.5",
+      "unit": "tonne",
+      "disposal_method": "D1"
+    }
+  ],
+  "total_amount_try": "4800.00"
+}

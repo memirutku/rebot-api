@@ -1,0 +1,33 @@
+{
+  "bundle": {
+    "schema_version": "0.1.0",
+    "tax_id": "9876543210",
+    "period": "2025-Q2",
+    "invoice_count": 1,
+    "total_waste_tonnes": "2.680",
+    "scope_3_5_co2e_kg": "54.85",
+    "objectives": [
+      {
+        "objective_id": 4,
+        "objective_name_tr": "Döngüsel ekonomiye geçiş",
+        "objective_name_en": "Transition to a circular economy",
+        "aligned_tonnes": "2.680",
+        "total_tonnes": "2.680",
+        "aligned_ratio": "1.0000",
+        "methodology": "Tonnage-weighted: R3/R4/R5 → 1.0 credit, R1 → 0.5 credit, D1/D5/D10/D11 → 0.0. Revenue-weighted alignment deferred to v1.0.",
+        "evidence": [
+          "ing_20972ef389869a84"
+        ]
+      }
+    ],
+    "notes": []
+  },
+  "signature": {
+    "algorithm": "Ed25519",
+    "key_id": "rebot-v1",
+    "key_fingerprint_sha256": "56475aa75463474c0285df5dbf2bcab73da651358839e9b77481b2eab107708c",
+    "value_b64": "Fo0MQjaMT6YihSLLXVszCndt5vmjFYbt/IaFmVfokvFsqYkJA6Q8/yw/ApcRppxiFFFHuTg/QClWGdMDocK+BQ==",
+    "signed_at": "2026-05-16T12:37:21.680495Z",
+    "payload_canonicalization": "json-sorted-keys-compact-utf8"
+  }
+}

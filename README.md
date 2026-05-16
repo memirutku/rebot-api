@@ -41,17 +41,47 @@ uvicorn api.main:app --reload
 
 🟢 **https://rebot-api.onrender.com** — Swagger UI: [/docs](https://rebot-api.onrender.com/docs)
 
-```bash
-# Health + emisyon faktörleri
-curl https://rebot-api.onrender.com/health
-curl "https://rebot-api.onrender.com/v1/factors?region=TR"
-curl https://rebot-api.onrender.com/v1/factors/electricity.tr.grid_average
+**Uçtan uca akış (3 adım):**
 
-# Atık taşıma faturası gönder → normalize edilmiş kayıt al
-curl -X POST https://rebot-api.onrender.com/v1/ingest \
-  -H "Content-Type: application/json" \
-  -d @examples/requests/waste_ingest.json
+```bash
+URL=https://rebot-api.onrender.com
+
+# 1. Atık taşıma faturası gönder
+curl -X POST $URL/v1/ingest -H "Content-Type: application/json" \
+     -d @examples/requests/waste_ingest.json
+
+# 2. KOBİ bazında dönemsel ESG bundle al (imzalı)
+curl "$URL/v1/esg/9876543210?period=2025-Q2" | jq .
+
+# 3. İmza doğrulama için public key
+curl $URL/v1/signing/pubkey | jq .
 ```
+
+İmza doğrulama (Python):
+
+```python
+import base64, json, requests
+from nacl.signing import VerifyKey
+
+resp = requests.get(f"{URL}/v1/esg/9876543210?period=2025-Q2").json()
+pub  = requests.get(f"{URL}/v1/signing/pubkey").json()
+
+vk = VerifyKey(base64.b64decode(pub["verify_key_b64"]))
+canonical = json.dumps(resp["bundle"], sort_keys=True, separators=(",",":"),
+                      ensure_ascii=False).encode()
+vk.verify(canonical, base64.b64decode(resp["signature"]["value_b64"]))  # raises if tampered
+print("✅ Imza geçerli, BDDK YVO bundle doğrulandı")
+```
+
+**Diğer endpoint'ler:**
+
+```bash
+curl $URL/health                                        # liveness
+curl "$URL/v1/factors?region=TR"                        # TR emisyon faktörleri
+curl $URL/v1/factors/electricity.tr.grid_average        # tek faktör
+```
+
+Örnek imzalı bundle: [`examples/responses/esg_bundle_signed.json`](examples/responses/esg_bundle_signed.json)
 
 > ⚠️ Render free tier — 15 dakika inaktiviteden sonra uyur. **İlk istek 30-60 saniye** sürebilir (cold start), sonraki istekler hızlı. Deploy adımları: [`docs/deploy-render.md`](docs/deploy-render.md).
 
@@ -95,19 +125,51 @@ See **Hızlı başlangıç** above — same commands.
 
 ---
 
+## Veri akışı
+
+```
+        KOBİ veya KOBİ'nin muhasebecisi
+                  │ (1) atık taşıma fatura JSON
+                  ▼
+   ┌─────────────────────────────────────────┐
+   │  POST /v1/ingest                        │
+   │   • EWC kodu + birim doğrulaması        │
+   │   • Pydantic ile şema validation        │
+   │   • SHA-256 dedupe                      │
+   │   • Verifier (GHG Protocol Scope 3.5)   │
+   └────────────────┬────────────────────────┘
+                    ▼  store
+   ┌─────────────────────────────────────────┐
+   │  GET /v1/esg/{tax_id}                   │
+   │   • Dönemsel toplam (period filtre)     │
+   │   • BDDK YVO Ek-1 Hedef 4 alignment     │
+   │   • Ed25519 imzalı bundle               │
+   └────────────────┬────────────────────────┘
+                    ▼
+              Banka / Regulator
+              (verifies via /v1/signing/pubkey)
+```
+
 ## Yol haritası / Roadmap
 
-- [x] Repo scaffold, FastAPI iskelet, `/v1/factors`
-- [x] Canlı demo (Render)
-- [x] `parser/waste.py` JSON yolu + `POST /v1/ingest` + dedupe (PDF parser bekliyor)
-- [ ] `parser/electricity.py` — EPDK formatlı elektrik faturası
-- [ ] `parser/water.py` — İSKİ/İZSU/ASKİ örnekleri
-- [ ] `parser/logistics.py` — akaryakıt + km bazlı
-- [ ] `core/verifier.py` — Scope 1/2/3 hesap motoru
-- [ ] `core/bddk_mapper.py` — YVO Ek-1 → bundle
-- [ ] `core/xbrl.py` — EFRAG VSME XBRL-JSON çıktı
-- [ ] `core/signing.py` — Ed25519 imza
-- [ ] Render canlı demo
-- [ ] Hugging Face Spaces (ek görünürlük)
+**Tamamlandı**
+- [x] Repo scaffold, FastAPI iskelet, `/v1/factors` (DEFRA 2024 + TEİAŞ 2023)
+- [x] Canlı demo (Render free tier)
+- [x] `parser/waste.py` JSON yolu + `POST /v1/ingest` + dedupe
+- [x] `core/verifier.py` — GHG Protocol Scope 3.5 (atık)
+- [x] `core/bddk_mapper.py` — YVO Ek-1 Objective 4 (circular economy)
+- [x] `GET /v1/esg/{tax_id}` — dönemsel imzalı bundle
+- [x] `core/signing.py` — Ed25519 detached signature + `/v1/signing/pubkey`
 
-İlerleyiş [GitHub Project board](https://github.com/memirutku/rebot-api/projects) üzerinden takip edilebilir.
+**Sırada**
+- [ ] Görsel demo (Gradio @ Hugging Face Spaces)
+- [ ] Branded landing page
+- [ ] `parser/electricity.py` — EPDK formatlı elektrik faturası → Scope 2
+- [ ] `parser/water.py` — İSKİ/İZSU/ASKİ örnekleri → Scope 3.4
+- [ ] `parser/logistics.py` — akaryakıt + km bazlı → Scope 1
+- [ ] `core/xbrl.py` — EFRAG VSME XBRL-JSON çıktı (AB interop)
+- [ ] BDDK YVO Ek-1 Objective 1 (climate mitigation) + Objective 5 (pollution)
+- [ ] Atık fatura PDF parser (anonimleştirilmiş örnekler gelince)
+- [ ] Üretim için SQLite/Postgres backed storage
+
+İlerleyiş [GitHub Issues](https://github.com/memirutku/rebot-api/issues) ve [Discussions](https://github.com/memirutku/rebot-api/discussions) üzerinden.
