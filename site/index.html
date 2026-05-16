@@ -50,26 +50,38 @@
 
   .lang-toggle {
     display: inline-flex;
-    background: var(--bg-soft);
-    border: 1px solid var(--border);
+    background: white;
+    border: 2px solid var(--green);
     border-radius: 999px;
-    padding: 2px;
+    padding: 3px;
     margin-left: 4px;
+    box-shadow: 0 1px 3px rgba(21, 128, 61, 0.15);
   }
   .lang-toggle button {
     background: transparent;
     border: 0;
-    padding: 4px 12px;
-    font-size: 12px;
-    font-weight: 600;
+    padding: 7px 14px;
+    font-size: 14px;
+    font-weight: 700;
     border-radius: 999px;
-    color: var(--muted);
+    color: var(--green);
     cursor: pointer;
     font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background-color 120ms ease, color 120ms ease;
+  }
+  .lang-toggle button:hover:not(.active) {
+    background: var(--green-light);
   }
   .lang-toggle button.active {
     background: var(--green);
     color: white;
+  }
+  .lang-toggle .flag {
+    font-size: 16px;
+    line-height: 1;
   }
 
   section { padding: 56px 0; border-top: 1px solid var(--border); scroll-margin-top: 80px; }
@@ -135,6 +147,8 @@
     .flow .arrow { display: none; }
     .flow .arrow-mobile { display: block; color: var(--green); font-size: 22px; text-align: center; font-weight: 700; line-height: 1; }
     header nav a:not(.lang-toggle-wrap) { display: none; }
+    .lang-toggle button { padding: 5px 10px; font-size: 13px; }
+    .lang-toggle .flag { font-size: 14px; }
   }
 </style>
 </head>
@@ -148,9 +162,13 @@
       <a href="#how" data-tr="Nasıl çalışır" data-en="How it works">Nasıl çalışır</a>
       <a href="#open" data-tr="Aç&iacute;k çekirdek" data-en="Open core">Açık çekirdek</a>
       <a href="https://github.com/memirutku/rebot-api">GitHub</a>
-      <div class="lang-toggle" role="group" aria-label="Language">
-        <button type="button" data-set-lang="tr" class="active">TR</button>
-        <button type="button" data-set-lang="en">EN</button>
+      <div class="lang-toggle" role="group" aria-label="Dil / Language">
+        <button type="button" data-set-lang="tr" class="active" aria-pressed="true">
+          <span class="flag" aria-hidden="true">🇹🇷</span><span>TR</span>
+        </button>
+        <button type="button" data-set-lang="en" aria-pressed="false">
+          <span class="flag" aria-hidden="true">🇬🇧</span><span>EN</span>
+        </button>
       </div>
     </nav>
   </div>

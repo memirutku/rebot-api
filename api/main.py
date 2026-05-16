@@ -25,6 +25,16 @@ app = FastAPI(
         {"name": "signing", "description": "Public key for verifying signed bundles"},
         {"name": "factors", "description": "Open emission factor catalogue (CC BY-SA 4.0)"},
     ],
+    swagger_ui_parameters={
+        # Hide the noisy bottom-of-page "Schemas" section — Pydantic models are
+        # already shown inline under each endpoint's Request body / Responses.
+        "defaultModelsExpandDepth": -1,
+        # Group operations under their tag, collapsed by default.
+        "docExpansion": "list",
+        # Stable, deep-linkable URLs per operation.
+        "deepLinking": True,
+        "displayRequestDuration": True,
+    },
 )
 
 app.add_middleware(
