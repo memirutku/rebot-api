@@ -38,7 +38,7 @@ uvicorn api.main:app --reload
 ```
 
 ### Canlı demo
-> Render'da deploy edildikten sonra link buraya gelecek. Render free tier'da 15 dakika inaktivite sonrası uyur; ilk istek 30-60 saniye sürebilir.
+> Render'da deploy edildikten sonra link buraya gelecek. Deploy adımları: [`docs/deploy-render.md`](docs/deploy-render.md). Render free tier'da 15 dakika inaktivite sonrası uyur; ilk istek 30-60 saniye sürebilir.
 
 ### Lisans
 - **Kod**: [Apache 2.0](LICENSE)
